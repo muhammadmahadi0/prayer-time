@@ -221,7 +221,7 @@ function getBanglaDate(g) {
   });
   let bm = ye[0];
   for (const ms of ye) { if (ms.date <= g) bm = ms; }
-  const diff = Math.round((g - bm.date) / 86400000);
+  const diff = Math.floor((g - bm.date) / 86400000);
   return { day: diff + 1, monthEn: bm.en, monthBn: bm.bn, year: by };
 }
 

@@ -1,16 +1,149 @@
 /* ========================================================================
-   Simple Prayer Time — Settings & UI
+   Simple Prayer Time — Countdown + Settings
    ======================================================================== */
+
+// ======================== CONFIG ========================
+
+const API_BASE = 'https://api.aladhan.com/v1';
+const LOCATION = { lat: 23.7898, lng: 90.4253 };
+const PRAYER_NAMES_BN = { fajr: 'ফজর', dhuhr: 'যোহর', asr: 'আসর', maghrib: 'মাগরিব', isha: 'ইশা' };
+const PRAYER_NAMES_EN = { fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
+const PRAYER_ORDER = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
 // ======================== HELPERS ========================
 
 function $(id) { return document.getElementById(id); }
+function t2m(t) { const [h,m]=t.split(':'); return +h*60+ +m; }
+
+function getNow() {
+  const d = new Date();
+  const utc = d.getTime() + d.getTimezoneOffset() * 60000;
+  return new Date(utc + 6 * 3600000);
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function toBn(n) {
+  if (typeof n === 'string') n = parseInt(n);
+  return String(n).split('').map(d => '০১২৩৪৫৬৭৮৯'[parseInt(d)] || d).join('');
+}
 
 // ======================== STATE ========================
 
 let state = {
-  lang: localStorage.getItem('lang') || 'bn'
+  lang: localStorage.getItem('lang') || 'bn',
+  times: null,
+  nextPrayer: null,
+  progressPct: 0
 };
+
+// ======================== COUNTDOWN ========================
+
+async function fetchTimes() {
+  try {
+    const now = getNow();
+    const ds = `${now.getDate()}-${now.getMonth()+1}-${now.getFullYear()}`;
+    const url = `${API_BASE}/timings/${ds}?latitude=${LOCATION.lat}&longitude=${LOCATION.lng}&method=1&school=1`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API error');
+    const d = await res.json();
+    if (d.code !== 200) throw new Error('Invalid');
+    const t = d.data.timings;
+    state.times = {
+      fajr: t.Fajr, sunrise: t.Sunrise, dhuhr: t.Dhuhr,
+      asr: t.Asr, maghrib: t.Maghrib, isha: t.Isha
+    };
+    return true;
+  } catch(e) {
+    // Fallback
+    state.times = {
+      fajr: '04:15', sunrise: '05:15', dhuhr: '12:00',
+      asr: '15:40', maghrib: '18:45', isha: '19:55'
+    };
+    return false;
+  }
+}
+
+function findNext() {
+  if (!state.times) return;
+  const now = getNow();
+  const cm = now.getHours() * 60 + now.getMinutes();
+  const cs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+
+  // Convert times to minutes
+  const times = {};
+  for (const key of PRAYER_ORDER) {
+    times[key] = t2m(state.times[key]);
+  }
+
+  // Find current and next prayer
+  let next = null;
+  let current = null;
+  for (let i = 0; i < PRAYER_ORDER.length; i++) {
+    const key = PRAYER_ORDER[i];
+    const tm = times[key];
+    if (cm < tm) {
+      next = { key, minutes: tm };
+      current = i > 0 ? PRAYER_ORDER[i-1] : PRAYER_ORDER[PRAYER_ORDER.length-1];
+      break;
+    }
+  }
+  // If all passed, next is tomorrow's Fajr
+  if (!next) {
+    next = { key: 'fajr', minutes: times.fajr + 1440 };
+    current = PRAYER_ORDER[PRAYER_ORDER.length - 1];
+  }
+
+  const nextMs = next.minutes * 60000;
+  const nowMs = cs * 1000;
+  let remaining = nextMs - nowMs;
+  if (remaining <= 0) remaining += 86400000;
+
+  // Calculate progress (percentage through current segment)
+  const prevMin = current ? times[current] : 0;
+  let dur = next.minutes - prevMin;
+  if (dur <= 0) dur += 1440;
+  const elapsed = cm - (prevMin > cm ? prevMin - 1440 : prevMin);
+  const pct = Math.min(100, Math.max(0, (elapsed / dur) * 100));
+
+  state.nextPrayer = { ...next, remaining };
+  state.progressPct = pct;
+}
+
+function updateCountdown() {
+  if (!state.nextPrayer) return;
+  const n = state.nextPrayer;
+  const remaining = n.remaining - 1000; // subtract 1 second each tick
+  n.remaining = Math.max(0, remaining);
+
+  // Display
+  const h = Math.floor(remaining / 3600000);
+  const m = Math.floor((remaining % 3600000) / 60000);
+  const s = Math.floor((remaining % 60000) / 1000);
+  $('countdownDisplay').textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+  // Prayer name
+  const bn = state.lang === 'bn';
+  if (bn) {
+    $('nextPrayerName').textContent = PRAYER_NAMES_BN[n.key];
+    $('timeRemainingLabelBn').classList.remove('hidden');
+    $('timeRemainingLabelEn').classList.add('hidden');
+  } else {
+    $('nextPrayerName').textContent = PRAYER_NAMES_EN[n.key];
+    $('timeRemainingLabelEn').classList.remove('hidden');
+    $('timeRemainingLabelBn').classList.add('hidden');
+  }
+}
+
+function updateProgress() {
+  $('progressBar').style.width = `${state.progressPct}%`;
+}
+
+function tick() {
+  findNext();
+  updateCountdown();
+  updateProgress();
+}
 
 // ======================== LANGUAGE ========================
 
@@ -18,7 +151,6 @@ function setLang(lang) {
   state.lang = lang;
   localStorage.setItem('lang', lang);
 
-  // Toggle buttons
   document.querySelectorAll('#langToggle span').forEach(el => {
     el.classList.toggle('bg-emerald-600/20', el.dataset.lang === lang);
     el.classList.toggle('text-emerald-400', el.dataset.lang === lang);
@@ -28,63 +160,106 @@ function setLang(lang) {
     el.classList.toggle('text-gray-500', el.dataset.lang !== lang);
   });
 
-  // App title
-  const isBn = lang === 'bn';
-  $('appTitleBn').classList.toggle('hidden', !isBn);
-  $('appTitleEn').classList.toggle('hidden', isBn);
-  $('subtitleBn').classList.toggle('hidden', !isBn);
-  $('subtitleEn').classList.toggle('hidden', isBn);
-  $('nafilTitle').textContent = isBn ? 'নফল নামাজসমূহ' : 'Nafil Prayers';
-  $('prohibitedTitle').textContent = isBn ? 'সালাতের নিষিদ্ধ সময়' : 'Prohibited Times';
-  $('settingsTitle').textContent = isBn ? 'সেটিংস' : 'Settings';
-  $('langSettingLabel').textContent = isBn ? 'ভাষা / Language' : 'Language';
-  $('footerPowered').textContent = isBn ? 'Powered by' : 'Powered by';
+  const bn = lang === 'bn';
+  // Title
+  $('appTitleBn').classList.toggle('hidden', !bn);
+  $('appTitleEn').classList.toggle('hidden', bn);
+  // Countdown labels
+  $('nextPrayerLabelBn').classList.toggle('hidden', !bn);
+  $('nextPrayerLabelEn').classList.toggle('hidden', bn);
+  $('timeRemainingLabelBn').classList.toggle('hidden', !bn && (!state.nextPrayer || state.nextPrayer.remaining >= 0));
+  $('timeRemainingLabelEn').classList.toggle('hidden', bn || !state.nextPrayer);
+  // Nafil
+  $('nafilTitle').textContent = bn ? 'নফল নামাজ' : 'Nafil';
+  $('nafilTahajjud').textContent = bn ? 'তাহাজ্জুদ' : 'Tahajjud';
+  $('nafilIshraq').textContent = bn ? 'ইশরাক' : 'Ishraq';
+  $('nafilDuha').textContent = bn ? 'সালাতুদ দুহা' : 'Salatud Duha';
+  $('nafilAwwabin').textContent = bn ? 'আওয়াবীন' : 'Awwabin';
+  $('nafilIshraqTime').textContent = bn ? 'সূর্যোদয় +১৫মি' : 'Sunrise +15m';
+  // Prohibited
+  $('prohibitedTitle').textContent = bn ? 'নিষিদ্ধ সময়' : 'Prohibited';
+  $('prohSunriseLabel').textContent = bn ? 'সূর্যোদয়' : 'Sunrise';
+  $('prohNoonLabel').textContent = bn ? 'সূর্য মধ্যাকাশে' : 'Zenith';
+  $('prohSunsetLabel').textContent = bn ? 'সূর্যাস্ত' : 'Sunset';
+  $('prohFooter').textContent = bn ? 'ইফতার = মাগরিব; মাগরিবের নামাজ ২-৩ মিনিট পর' : 'Iftar = Maghrib; Maghrib prayer 2-3 min later';
+  // Settings
+  $('settingsTitle').textContent = bn ? 'সেটিংস' : 'Settings';
+  $('langSettingLabel').textContent = bn ? 'ভাষা / Language' : 'Language';
+  $('footerPowered').textContent = bn ? 'Powered by' : 'Powered by';
+}
 
-  // Nafil labels
-  $('nafilTahajjud').textContent = isBn ? 'তাহাজ্জুদ' : 'Tahajjud';
-  $('nafilIshraq').textContent = isBn ? 'ইশরাক' : 'Ishraq';
-  $('nafilDuha').textContent = isBn ? 'সালাতুদ দুহা' : 'Salatud Duha';
-  $('nafilAwwabin').textContent = isBn ? 'আওয়াবীন' : 'Awwabin';
+// ======================== WIDGET SIZING ========================
 
-  $('nafilIshraqTime').textContent = isBn ? 'সূর্যোদয়ের ১৫ মিনিট পর' : '15 min after sunrise';
-  $('nafilDuhaTime').textContent = isBn ? 'ইশরাক — যোহরের ১০ মিনিট আগে' : 'Ishraq — 10 min before Dhuhr';
+function sizeWidget() {
+  const w = $('prayerWidget');
+  const wrap = $('widgetWrap');
+  if (!w || !wrap) return;
 
-  // Prohibited labels
-  $('prohSunriseLabel').textContent = isBn ? 'সূর্যোদয়ের সময়' : 'At Sunrise';
-  $('prohNoonLabel').textContent = isBn ? 'দুপুরে সূর্য মধ্যাকাশে' : 'Sun at Zenith';
-  $('prohSunsetLabel').textContent = isBn ? 'সূর্যাস্তের সময়' : 'At Sunset';
-  $('prohSunrise').textContent = isBn ? '+১৫ মিনিট' : '+15 min';
-  $('prohNoon').textContent = isBn ? 'যোহরের ১০ মিনিট আগে' : '10 min before Dhuhr';
-  $('prohSunset').textContent = isBn ? '১৫ মিনিট আগে' : '15 min before';
-  $('prohibitedFooter').textContent = isBn
-    ? 'ইফতার = মাগরিবের সময়, মাগরিবের নামাজ ২-৩ মিনিট পর'
-    : 'Iftar = Maghrib time; Maghrib prayer 2-3 min later';
+  // Try to detect widget content height.
+  // The IslamicFinder widget loads asynchronously, so we wait and then set height.
+  // If the widget supports postMessage auto-height, it would work here.
+  // Otherwise, we use a reasonable estimate based on typical widget output.
+  
+  // Wait for the widget to load, then try different heights
+  let attempts = 0;
+  const check = setInterval(() => {
+    attempts++;
+    try {
+      // Try to access iframe content — will fail cross-origin, but we try anyway
+      const body = w.contentDocument?.body;
+      if (body) {
+        const h = body.scrollHeight;
+        if (h > 100) {
+          w.style.height = h + 'px';
+          clearInterval(check);
+          return;
+        }
+      }
+    } catch(e) {
+      // Cross-origin — this is expected
+    }
+    // Fallback: use pre-set heights
+    const heights = [340, 360, 380, 400, 320];
+    if (attempts <= heights.length) {
+      w.style.height = heights[attempts-1] + 'px';
+    } else {
+      clearInterval(check);
+    }
+  }, 300);
 }
 
 // ======================== INIT ========================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // ---- Language toggle ----
   $('langToggle').addEventListener('click', function(e) {
     const span = e.target.closest('span');
     if (span && span.dataset.lang) setLang(span.dataset.lang);
   });
 
-  // ---- Settings panel ----
+  // ---- Settings ----
   $('settingsBtn').addEventListener('click', () => {
     $('settingsPanel').classList.add('open');
+    $('overlay').classList.remove('hidden');
     $('overlay').classList.add('show');
   });
   function closeSettings() {
     $('settingsPanel').classList.remove('open');
+    $('overlay').classList.add('hidden');
     $('overlay').classList.remove('show');
   }
   $('closeSettings').addEventListener('click', closeSettings);
   $('overlay').addEventListener('click', closeSettings);
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeSettings();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSettings(); });
 
-  // ---- Apply saved language ----
+  // ---- Apply language ----
   setLang(state.lang);
+
+  // ---- Load times + start countdown ----
+  await fetchTimes();
+  tick();
+  setInterval(tick, 1000);
+
+  // ---- Size widget ----
+  sizeWidget();
 });

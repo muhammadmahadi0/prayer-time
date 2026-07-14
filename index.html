@@ -15,110 +15,133 @@
   <div id="app" class="w-full max-w-md mx-auto px-4">
 
     <!-- ======== HEADER ======== -->
-    <header class="pt-6 pb-4">
+    <header class="pt-5 pb-3">
       <div class="flex items-center justify-between">
-        <h1 class="text-lg font-bold whitespace-nowrap">
-          <span id="appTitleBn">সিম্পল প্রেয়ার টাইম</span>
-          <span id="appTitleEn" class="hidden">Simple Prayer Time</span>
-        </h1>
-        <button id="settingsBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1f2e] hover:bg-[#242b3d] active:bg-[#2d3648] transition active:scale-95">
-          <i class="fas fa-sliders-h text-gray-400 text-sm"></i>
+        <div>
+          <h1 class="text-base font-bold">
+            <span id="appTitleBn">সিম্পল প্রেয়ার টাইম</span>
+            <span id="appTitleEn" class="hidden">Prayer Time</span>
+          </h1>
+          <p id="locationDisplay" class="text-[10px] text-gray-500 mt-0.5">বাংলাদেশ</p>
+        </div>
+        <button id="settingsBtn" class="w-9 h-9 flex items-center justify-center rounded-xl bg-[#1a1f2e] hover:bg-[#242b3d] transition active:scale-95">
+          <i class="fas fa-sliders-h text-gray-400 text-xs"></i>
         </button>
       </div>
-      <p class="text-[11px] text-gray-500 mt-1.5" id="subtitleBn">বাংলাদেশ — হানাফি</p>
-      <p id="subtitleEn" class="text-[11px] text-gray-500 mt-1.5 hidden">Bangladesh — Hanafi</p>
     </header>
 
-    <!-- ======== ISLAMICFINDER WIDGET ======== -->
-    <div class="rounded-2xl overflow-hidden border border-gray-800/50 bg-[#11161f] shadow-lg">
-      <div class="p-0.5">
-        <iframe 
-          id="prayerWidget"
-          style="width:100%; height:530px; border:none; overflow:hidden; display:block; border-radius:14px;" 
-          scrolling="no"
-          src="https://www.islamicfinder.org/prayer-widget/?city=Dhaka&country=Bangladesh&method=1&school=1&timezone=Asia%2FDhaka&lang=en&theme=dark&showTable=true&showDate=true">
-        </iframe>
+    <!-- ======== NEXT PRAYER COUNTDOWN ======== -->
+    <div id="countdownCard" class="bg-[#11161f] rounded-2xl p-4 border border-gray-800/40 mb-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-[10px] text-gray-500 font-medium tracking-wider">
+            <span id="nextPrayerLabelBn">পরবর্তী নামাজ</span>
+            <span id="nextPrayerLabelEn" class="hidden">Next Prayer</span>
+          </p>
+          <p id="nextPrayerName" class="text-lg font-bold text-emerald-400 mt-0.5">--</p>
+        </div>
+        <div class="text-right">
+          <p id="countdownDisplay" class="font-mono text-3xl font-bold text-white tracking-[0.06em]">--:--:--</p>
+          <p id="countdownSub" class="text-[9px] text-gray-600 mt-0.5">
+            <span id="timeRemainingLabelBn">বাকি</span>
+            <span id="timeRemainingLabelEn" class="hidden">remaining</span>
+          </p>
+        </div>
+      </div>
+      <!-- Progress bar -->
+      <div class="mt-3 h-1 bg-[#0b0e14] rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
       </div>
     </div>
 
-    <!-- ======== BOTTOM CARD (Quick Info / Prohibited / Nafil) ======== -->
-    <div class="mt-5 space-y-3">
-      <!-- Nafil Times -->
-      <div class="bg-[#11161f] rounded-2xl p-4 border border-gray-800/30">
-        <h3 class="text-sm font-semibold text-emerald-400 flex items-center gap-2 mb-3">
+    <!-- ======== ISLAMICFINDER WIDGET ======== -->
+    <div class="rounded-2xl overflow-hidden border border-gray-800/40 bg-[#11161f] shadow-lg" id="widgetWrap">
+      <iframe 
+        id="prayerWidget"
+        style="width:100%; height:0; border:none; display:block;"
+        scrolling="no"
+        title="Prayer Times"
+        src="https://www.islamicfinder.org/prayer-widget/?city=Dhaka&country=Bangladesh&method=1&school=1&timezone=Asia%2FDhaka&lang=en&theme=dark&showTable=true&showDate=true">
+      </iframe>
+    </div>
+
+    <!-- ======== BOTTOM INFO (Nafil / Prohibited) ======== -->
+    <div class="mt-4 space-y-3">
+      <details class="bg-[#11161f] rounded-2xl border border-gray-800/30 overflow-hidden">
+        <summary class="px-4 py-3 text-sm font-medium cursor-pointer flex items-center gap-2 text-gray-400 hover:text-white transition select-none">
           <i class="fas fa-star text-emerald-500/70 text-xs"></i>
-          <span id="nafilTitle">নফল নামাজসমূহ</span>
-        </h3>
-        <div class="grid grid-cols-2 gap-2">
+          <span id="nafilTitle">নফল নামাজ</span>
+          <i class="fas fa-chevron-down ml-auto text-xs opacity-50 transition-transform"></i>
+        </summary>
+        <div class="px-4 pb-4 grid grid-cols-2 gap-2 border-t border-gray-800/30 pt-3">
           <div class="bg-[#0b0e14] rounded-xl p-3">
             <p class="text-[10px] text-gray-500 font-medium" id="nafilTahajjud">তাহাজ্জুদ</p>
-            <p class="text-sm font-semibold text-gray-300 mt-0.5">রাত ১২:০০ — সাহরি</p>
+            <p class="text-xs text-gray-300 mt-0.5">রাত ১২:০০ — সাহরি</p>
           </div>
           <div class="bg-[#0b0e14] rounded-xl p-3">
             <p class="text-[10px] text-gray-500 font-medium" id="nafilIshraq">ইশরাক</p>
-            <p class="text-sm font-semibold text-gray-300 mt-0.5" id="nafilIshraqTime">সূর্যোদয়ের ১৫ মিনিট পর</p>
+            <p class="text-xs text-gray-300 mt-0.5" id="nafilIshraqTime">সূর্যোদয় +১৫মি</p>
           </div>
           <div class="bg-[#0b0e14] rounded-xl p-3">
             <p class="text-[10px] text-gray-500 font-medium" id="nafilDuha">সালাতুদ দুহা</p>
-            <p class="text-sm font-semibold text-gray-300 mt-0.5" id="nafilDuhaTime">ইশরাক — যোহরের ১০ মিনিট আগে</p>
+            <p class="text-xs text-gray-300 mt-0.5">ইশরাক — যোহর</p>
           </div>
           <div class="bg-[#0b0e14] rounded-xl p-3">
             <p class="text-[10px] text-gray-500 font-medium" id="nafilAwwabin">আওয়াবীন</p>
-            <p class="text-sm font-semibold text-gray-300 mt-0.5">মাগরিবের পর — ইশার আগে</p>
+            <p class="text-xs text-gray-300 mt-0.5">মাগরিব — ইশা</p>
           </div>
         </div>
-      </div>
+      </details>
 
-      <!-- Prohibited Times -->
       <details class="bg-[#11161f] rounded-2xl border border-gray-800/30 overflow-hidden">
-        <summary class="px-4 py-3.5 text-sm font-medium cursor-pointer flex items-center gap-2 text-gray-400 hover:text-white transition select-none">
+        <summary class="px-4 py-3 text-sm font-medium cursor-pointer flex items-center gap-2 text-gray-400 hover:text-white transition select-none">
           <i class="fas fa-ban text-red-500/70 text-xs"></i>
-          <span id="prohibitedTitle">সালাতের নিষিদ্ধ সময়</span>
-          <i class="fas fa-chevron-down ml-auto text-xs opacity-50"></i>
+          <span id="prohibitedTitle">নিষিদ্ধ সময়</span>
+          <i class="fas fa-chevron-down ml-auto text-xs opacity-50 transition-transform"></i>
         </summary>
-        <div class="px-4 pb-4 space-y-2 text-sm text-gray-400 border-t border-gray-800/30 pt-3">
-          <div class="flex justify-between">
-            <span id="prohSunriseLabel">সূর্যোদয়ের সময়</span>
-            <span class="text-gray-500" id="prohSunrise">+১৫ মিনিট</span>
+        <div class="px-4 pb-4 space-y-2 border-t border-gray-800/30 pt-3">
+          <div class="flex justify-between text-xs">
+            <span id="prohSunriseLabel" class="text-gray-400">সূর্যোদয়</span>
+            <span class="text-gray-500">+১৫ মিনিট</span>
           </div>
-          <div class="flex justify-between">
-            <span id="prohNoonLabel">দুপুরে সূর্য মধ্যাকাশে</span>
-            <span class="text-gray-500" id="prohNoon">যোহরের ১০ মিনিট আগে</span>
+          <div class="flex justify-between text-xs">
+            <span id="prohNoonLabel" class="text-gray-400">সূর্য মধ্যাকাশে</span>
+            <span class="text-gray-500">যোহরের ১০মি আগে</span>
           </div>
-          <div class="flex justify-between">
-            <span id="prohSunsetLabel">সূর্যাস্তের সময়</span>
-            <span class="text-gray-500" id="prohSunset">১৫ মিনিট আগে</span>
+          <div class="flex justify-between text-xs">
+            <span id="prohSunsetLabel" class="text-gray-400">সূর্যাস্ত</span>
+            <span class="text-gray-500">১৫ মিনিট আগে</span>
           </div>
-          <div id="prohibitedFooter" class="text-[10px] text-gray-600 mt-2 border-t border-gray-800/30 pt-2">ইফতার = মাগরিবের সময়, মাগরিবের নামাজ ২-৩ মিনিট পর</div>
+          <p class="text-[9px] text-gray-600 mt-2 pt-2 border-t border-gray-800/30" id="prohFooter">ইফতার = মাগরিব; মাগরিবের নামাজ ২-৩ মিনিট পর</p>
         </div>
       </details>
     </div>
 
     <!-- ======== FOOTER ======== -->
-    <footer class="mt-8 pb-8 text-center">
-      <p class="text-[10px] text-gray-700">
+    <footer class="mt-6 pb-6 text-center">
+      <p class="text-[9px] text-gray-700">
         <span id="footerPowered">Powered by</span>
-        <a href="https://islamicfinder.org" target="_blank" rel="noopener" class="text-gray-600 hover:text-gray-400 transition">IslamicFinder.org</a>
+        <a href="https://islamicfinder.org" target="_blank" rel="noopener" class="text-gray-600 hover:text-gray-400">IslamicFinder.org</a>
+        <span class="text-gray-700"> · </span>
+        <a href="https://github.com/muhammadmahadi0/prayer-time" target="_blank" rel="noopener" class="text-gray-600 hover:text-gray-400">GitHub</a>
       </p>
     </footer>
   </div>
 
-  <!-- ======== SETTINGS PANEL ======== -->
-  <div id="overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
+  <!-- ======== SETTINGS ======== -->
+  <div id="overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden"></div>
   <div id="settingsPanel" class="fixed bottom-0 left-0 right-0 bg-[#131820] rounded-t-3xl z-50 translate-y-full transition-transform duration-400 border-t border-gray-800/50 shadow-2xl max-w-md mx-auto">
     <div class="flex items-center justify-between px-5 py-4 border-b border-gray-800/50">
       <p class="font-bold text-sm" id="settingsTitle">সেটিংস</p>
-      <button id="closeSettings" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition active:bg-white/20">
+      <button id="closeSettings" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
         <i class="fas fa-times text-gray-400"></i>
       </button>
     </div>
-    <div class="px-5 py-5 space-y-6">
-      <div>
-        <p class="text-xs text-gray-400 font-medium mb-2.5" id="langSettingLabel">ভাষা / Language</p>
-        <div id="langToggle" class="flex bg-[#0b0e14] rounded-xl overflow-hidden border border-gray-800/50">
-          <span data-lang="bn" class="flex-1 text-center py-3 text-sm cursor-pointer transition font-medium bg-emerald-600/20 text-emerald-400 border border-emerald-600/30 rounded-xl touch-manipulation select-none">বাংলা</span>
-          <span data-lang="en" class="flex-1 text-center py-3 text-sm cursor-pointer transition font-medium text-gray-500 touch-manipulation select-none">English</span>
-        </div>
+    <div class="px-5 py-5">
+      <p class="text-xs text-gray-400 font-medium mb-2.5" id="langSettingLabel">ভাষা / Language</p>
+      <div id="langToggle" class="flex bg-[#0b0e14] rounded-xl overflow-hidden border border-gray-800/50">
+        <span data-lang="bn" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium bg-emerald-600/20 text-emerald-400 border border-emerald-600/30 rounded-xl select-none">বাংলা</span>
+        <span data-lang="en" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium text-gray-500 select-none">English</span>
       </div>
     </div>
     <div class="px-5 py-4 border-t border-gray-800/50 text-center">

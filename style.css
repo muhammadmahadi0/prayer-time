@@ -2,24 +2,12 @@
    Simple Prayer Time — Styles
    ======================================================================== */
 
-/* ---- Base ---- */
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  overscroll-behavior: none;
-}
+* { -webkit-tap-highlight-color: transparent; }
 
 /* ---- Settings Panel ---- */
 #settingsPanel {
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
 #settingsPanel.open {
   transform: translateY(0);
 }
@@ -29,13 +17,12 @@ body {
   opacity: 0;
   pointer-events: none;
 }
-
 #overlay.show {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* ---- Details (Prohibited Times) ---- */
+/* ---- Details (collapsible) ---- */
 details > summary {
   list-style: none;
 }
@@ -51,51 +38,23 @@ details[open] > summary .fa-chevron-down {
 
 /* ---- Widget iframe ---- */
 #prayerWidget {
-  min-height: 480px;
+  transition: height 0.3s ease;
 }
 
-/* ---- Nafil Cards ---- */
-@media (max-width: 374px) {
-  .grid-cols-2 {
-    grid-template-columns: 1fr 1fr;
-  }
+/* ---- Progress bar ---- */
+#progressBar {
+  will-change: width;
 }
 
-/* ---- Footer ---- */
-a {
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-/* ---- Touch feedback ---- */
-.touch-manipulation {
-  touch-action: manipulation;
-}
-
-/* ---- Scrollbar ---- */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: #0b0e14;
-}
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 2px;
-}
-
-/* ---- Language Toggle Active State ---- */
-.toggle-lang span {
-  transition: all 0.2s ease;
-}
-
-/* ---- Animation ---- */
+/* ---- Animations ---- */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-#app > * {
-  animation: fadeIn 0.5s ease forwards;
+#countdownCard {
+  animation: fadeIn 0.4s ease forwards;
+}
+#widgetWrap {
+  animation: fadeIn 0.5s ease 0.1s forwards;
+  opacity: 0;
 }

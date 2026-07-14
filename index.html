@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕌</text></svg>">
 </head>
-<body class="bg-gradient-to-b from-[#0b0e14] to-[#0d121c] text-white min-h-screen" style="font-family: 'Noto Sans Bengali', system-ui, sans-serif;">
+<body class="min-h-screen" style="font-family: 'Noto Sans Bengali', system-ui, sans-serif;" data-theme="dark">
 
   <div id="app" class="w-full max-w-md mx-auto px-4">
 
@@ -22,45 +22,51 @@
             <span id="appTitleBn">সিম্পল প্রেয়ার টাইম</span>
             <span id="appTitleEn" class="hidden">Prayer Time</span>
           </h1>
-          <p id="locationDisplay" class="text-[10px] text-gray-500 mt-0.5">বাংলাদেশ</p>
+          <p id="locationDisplay" class="text-[10px] mt-0.5">বাংলাদেশ</p>
         </div>
-        <button id="settingsBtn" class="w-9 h-9 flex items-center justify-center rounded-xl bg-[#1a1f2e] hover:bg-[#242b3d] transition active:scale-95">
-          <i class="fas fa-sliders-h text-gray-400 text-xs"></i>
-        </button>
+        <div class="flex items-center gap-2">
+          <button id="themeBtn" class="w-9 h-9 flex items-center justify-center rounded-xl transition active:scale-95">
+            <i id="themeIconSun" class="fas fa-sun text-amber-400 hidden"></i>
+            <i id="themeIconMoon" class="fas fa-moon text-gray-400"></i>
+          </button>
+          <button id="settingsBtn" class="w-9 h-9 flex items-center justify-center rounded-xl transition active:scale-95">
+            <i class="fas fa-sliders-h text-xs"></i>
+          </button>
+        </div>
       </div>
     </header>
 
     <!-- ======== NEXT PRAYER COUNTDOWN ======== -->
-    <div id="countdownCard" class="bg-[#11161f] rounded-2xl p-4 border border-gray-800/40 mb-3">
+    <div id="countdownCard" class="rounded-2xl p-4 mb-3">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-[10px] text-gray-500 font-medium tracking-wider">
+          <p class="text-[10px] font-medium tracking-wider">
             <span id="nextPrayerLabelBn">পরবর্তী নামাজ</span>
             <span id="nextPrayerLabelEn" class="hidden">Next Prayer</span>
           </p>
-          <p id="nextPrayerName" class="text-lg font-bold text-emerald-400 mt-0.5">--</p>
+          <p id="nextPrayerName" class="text-lg font-bold mt-0.5">--</p>
         </div>
         <div class="text-right">
-          <p id="countdownDisplay" class="font-mono text-3xl font-bold text-white tracking-[0.06em]">--:--:--</p>
-          <p id="countdownSub" class="text-[9px] text-gray-600 mt-0.5">
+          <p id="countdownDisplay" class="font-mono text-3xl font-bold tracking-[0.06em]">--:--:--</p>
+          <p class="text-[9px] mt-0.5">
             <span id="timeRemainingLabelBn">বাকি</span>
             <span id="timeRemainingLabelEn" class="hidden">remaining</span>
           </p>
         </div>
       </div>
-      <div class="mt-3 h-1 bg-[#0b0e14] rounded-full overflow-hidden">
+      <div class="mt-3 h-1 rounded-full overflow-hidden">
         <div id="progressBar" class="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
       </div>
     </div>
 
     <!-- ======== DATE DISPLAY ======== -->
     <div class="flex items-center justify-between px-1 mb-3">
-      <p id="banglaDateDisplay" class="text-xs text-gray-400">--</p>
-      <p id="gregorianDateDisplay" class="text-[10px] text-gray-600">--</p>
+      <p id="banglaDateDisplay" class="text-xs">--</p>
+      <p id="gregorianDateDisplay" class="text-[10px]">--</p>
     </div>
 
     <!-- ======== ISLAMICFINDER WIDGET ======== -->
-    <div class="rounded-2xl overflow-hidden border border-gray-800/40 bg-[#11161f] shadow-lg" id="widgetWrap">
+    <div id="widgetWrap" class="rounded-2xl overflow-hidden shadow-lg">
       <iframe 
         id="prayerWidget"
         style="width:100%; border: 1px solid #ddd; display:block; height: auto;"
@@ -70,87 +76,96 @@
       </iframe>
     </div>
 
-    <!-- ======== BOTTOM INFO (Nafil / Prohibited) ======== -->
+    <!-- ======== BOTTOM INFO ======== -->
     <div class="mt-4 space-y-3">
-      <details class="bg-[#11161f] rounded-2xl border border-gray-800/30 overflow-hidden">
-        <summary class="px-4 py-3 text-sm font-medium cursor-pointer flex items-center gap-2 text-gray-400 hover:text-white transition select-none">
+      <details class="rounded-2xl overflow-hidden">
+        <summary class="px-4 py-3 text-sm font-medium cursor-pointer flex items-center gap-2 select-none">
           <i class="fas fa-star text-emerald-500/70 text-xs"></i>
           <span id="nafilTitle">নফল নামাজ</span>
           <i class="fas fa-chevron-down ml-auto text-xs opacity-50 transition-transform"></i>
         </summary>
-        <div class="px-4 pb-4 grid grid-cols-2 gap-2 border-t border-gray-800/30 pt-3">
-          <div class="bg-[#0b0e14] rounded-xl p-3">
-            <p class="text-[10px] text-gray-500 font-medium" id="nafilTahajjud">তাহাজ্জুদ</p>
-            <p class="text-xs text-gray-300 mt-0.5" id="nafilTahajjudTime">--</p>
+        <div class="px-4 pb-4 grid grid-cols-2 gap-2 pt-3">
+          <div class="rounded-xl p-3">
+            <p class="text-[10px] font-medium" id="nafilTahajjud">তাহাজ্জুদ</p>
+            <p class="text-xs mt-0.5" id="nafilTahajjudTime">--</p>
           </div>
-          <div class="bg-[#0b0e14] rounded-xl p-3">
-            <p class="text-[10px] text-gray-500 font-medium" id="nafilIshraq">ইশরাক</p>
-            <p class="text-xs text-gray-300 mt-0.5" id="nafilIshraqTime">সূর্যোদয় +১৫মি</p>
+          <div class="rounded-xl p-3">
+            <p class="text-[10px] font-medium" id="nafilIshraq">ইশরাক</p>
+            <p class="text-xs mt-0.5" id="nafilIshraqTime">সূর্যোদয় +১৫মি</p>
           </div>
-          <div class="bg-[#0b0e14] rounded-xl p-3">
-            <p class="text-[10px] text-gray-500 font-medium" id="nafilDuha">সালাতুদ দুহা</p>
-            <p class="text-xs text-gray-300 mt-0.5">ইশরাক — যোহর</p>
+          <div class="rounded-xl p-3">
+            <p class="text-[10px] font-medium" id="nafilDuha">সালাতুদ দুহা</p>
+            <p class="text-xs mt-0.5">ইশরাক — যোহর</p>
           </div>
-          <div class="bg-[#0b0e14] rounded-xl p-3">
-            <p class="text-[10px] text-gray-500 font-medium" id="nafilAwwabin">আওয়াবীন</p>
-            <p class="text-xs text-gray-300 mt-0.5">মাগরিব — ইশা</p>
+          <div class="rounded-xl p-3">
+            <p class="text-[10px] font-medium" id="nafilAwwabin">আওয়াবীন</p>
+            <p class="text-xs mt-0.5">মাগরিব — ইশা</p>
           </div>
         </div>
       </details>
 
-      <details class="bg-[#11161f] rounded-2xl border border-gray-800/30 overflow-hidden">
-        <summary class="px-4 py-3 text-sm font-medium cursor-pointer flex items-center gap-2 text-gray-400 hover:text-white transition select-none">
+      <details class="rounded-2xl overflow-hidden">
+        <summary class="px-4 py-3 text-sm font-medium cursor-pointer flex items-center gap-2 select-none">
           <i class="fas fa-ban text-red-500/70 text-xs"></i>
           <span id="prohibitedTitle">নিষিদ্ধ সময়</span>
           <i class="fas fa-chevron-down ml-auto text-xs opacity-50 transition-transform"></i>
         </summary>
-        <div class="px-4 pb-4 space-y-2 border-t border-gray-800/30 pt-3">
+        <div class="px-4 pb-4 space-y-2 pt-3">
           <div class="flex justify-between text-xs">
-            <span id="prohSunriseLabel" class="text-gray-400">সূর্যোদয়</span>
-            <span class="text-gray-500">+১৫ মিনিট</span>
+            <span id="prohSunriseLabel">সূর্যোদয়</span>
+            <span id="prohSunriseVal">+১৫ মিনিট</span>
           </div>
           <div class="flex justify-between text-xs">
-            <span id="prohNoonLabel" class="text-gray-400">সূর্য মধ্যাকাশে</span>
-            <span class="text-gray-500">যোহরের ১০মি আগে</span>
+            <span id="prohNoonLabel">সূর্য মধ্যাকাশে</span>
+            <span id="prohNoonVal">যোহরের ১০মি আগে</span>
           </div>
           <div class="flex justify-between text-xs">
-            <span id="prohSunsetLabel" class="text-gray-400">সূর্যাস্ত</span>
-            <span class="text-gray-500">১৫ মিনিট আগে</span>
+            <span id="prohSunsetLabel">সূর্যাস্ত</span>
+            <span id="prohSunsetVal">১৫ মিনিট আগে</span>
           </div>
-          <p class="text-[9px] text-gray-600 mt-2 pt-2 border-t border-gray-800/30" id="prohFooter">ইফতার = মাগরিব; মাগরিবের নামাজ ২-৩ মিনিট পর</p>
+          <p class="text-[9px] mt-2 pt-2" id="prohFooter">ইফতার = মাগরিব; মাগরিবের নামাজ ২-৩ মিনিট পর</p>
         </div>
       </details>
     </div>
 
     <!-- ======== FOOTER ======== -->
     <footer class="mt-6 pb-6 text-center">
-      <p class="text-[9px] text-gray-700">
+      <p class="text-[9px]" id="footerPoweredWrap">
         <span id="footerPowered">Powered by</span>
-        <a href="https://islamicfinder.org" target="_blank" rel="noopener" class="text-gray-600 hover:text-gray-400">IslamicFinder.org</a>
-        <span class="text-gray-700"> · </span>
-        <a href="https://github.com/muhammadmahadi0/prayer-time" target="_blank" rel="noopener" class="text-gray-600 hover:text-gray-400">GitHub</a>
+        <a href="https://islamicfinder.org" target="_blank" rel="noopener">IslamicFinder.org</a>
+        <span> · </span>
+        <a href="https://github.com/muhammadmahadi0/prayer-time" target="_blank" rel="noopener">GitHub</a>
       </p>
     </footer>
   </div>
 
   <!-- ======== SETTINGS ======== -->
-  <div id="overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden"></div>
-  <div id="settingsPanel" class="fixed bottom-0 left-0 right-0 bg-[#131820] rounded-t-3xl z-50 translate-y-full transition-transform duration-400 border-t border-gray-800/50 shadow-2xl max-w-md mx-auto">
-    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-800/50">
+  <div id="overlay" class="fixed inset-0 backdrop-blur-sm z-40 hidden"></div>
+  <div id="settingsPanel" class="fixed bottom-0 left-0 right-0 rounded-t-3xl z-50 translate-y-full transition-transform duration-400 border-t shadow-2xl max-w-md mx-auto">
+    <div class="flex items-center justify-between px-5 py-4">
       <p class="font-bold text-sm" id="settingsTitle">সেটিংস</p>
-      <button id="closeSettings" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
-        <i class="fas fa-times text-gray-400"></i>
+      <button id="closeSettings" class="w-10 h-10 flex items-center justify-center rounded-full transition">
+        <i class="fas fa-times"></i>
       </button>
     </div>
-    <div class="px-5 py-5">
-      <p class="text-xs text-gray-400 font-medium mb-2.5" id="langSettingLabel">ভাষা / Language</p>
-      <div id="langToggle" class="flex bg-[#0b0e14] rounded-xl overflow-hidden border border-gray-800/50">
-        <span data-lang="bn" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium bg-emerald-600/20 text-emerald-400 border border-emerald-600/30 rounded-xl select-none">বাংলা</span>
-        <span data-lang="en" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium text-gray-500 select-none">English</span>
+    <div class="px-5 py-5 space-y-6">
+      <div>
+        <p class="text-xs font-medium mb-2.5" id="langSettingLabel">ভাষা / Language</p>
+        <div id="langToggle" class="flex rounded-xl overflow-hidden">
+          <span data-lang="bn" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium rounded-xl select-none">বাংলা</span>
+          <span data-lang="en" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium select-none">English</span>
+        </div>
+      </div>
+      <div>
+        <p class="text-xs font-medium mb-2.5" id="themeSettingLabel">থিম / Theme</p>
+        <div id="themeToggle" class="flex rounded-xl overflow-hidden">
+          <span data-theme="dark" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium rounded-xl select-none">◐ ডার্ক</span>
+          <span data-theme="light" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium select-none">☀ লাইট</span>
+        </div>
       </div>
     </div>
-    <div class="px-5 py-4 border-t border-gray-800/50 text-center">
-      <p class="text-xs text-gray-600">v2 · সিম্পল প্রেয়ার টাইম</p>
+    <div class="px-5 py-4 text-center">
+      <p class="text-xs" id="settingsFooter">v2 · সিম্পল প্রেয়ার টাইম</p>
     </div>
   </div>
 

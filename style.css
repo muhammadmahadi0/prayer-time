@@ -1,18 +1,229 @@
 /* ========================================================================
-   Simple Prayer Time — Styles
+   Simple Prayer Time — Themes & Styles
    ======================================================================== */
 
 * { -webkit-tap-highlight-color: transparent; }
 
-/* ---- Settings Panel ---- */
+/* ======================== THEME: DARK (default) ======================== */
+
+:root,
+[data-theme="dark"] {
+  --bg-body: #0b0e14;
+  --bg-body-to: #0d121c;
+  --bg-card: #11161f;
+  --bg-card2: #131820;
+  --bg-sub: #0b0e14;
+  --bg-hover: #1a1f2e;
+  --bg-active: #242b3d;
+  --bg-btn: #1a1f2e;
+  --bg-settings: #131820;
+
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #6b7280;
+  --text-dim: #4b5563;
+  --text-very-dim: #374151;
+  --text-emerald: #34d399;
+  --text-emerald-alt: #10b981;
+  --text-gray-400: #9ca3af;
+  --text-gray-500: #6b7280;
+  --text-gray-600: #4b5563;
+  --text-gray-700: #374151;
+
+  --border: rgba(31, 41, 55, 0.3);
+  --border-strong: rgba(31, 41, 55, 0.5);
+  --border-panel: rgba(31, 41, 55, 0.5);
+  --border-toggle: rgba(31, 41, 55, 0.5);
+
+  --overlay: rgba(0, 0, 0, 0.7);
+
+  --progress-bg: #0b0e14;
+  --toggle-bg: #0b0e14;
+  --active-bg: rgba(16, 185, 129, 0.2);
+  --active-border: rgba(16, 185, 129, 0.3);
+}
+
+/* ======================== THEME: LIGHT ======================== */
+
+[data-theme="light"] {
+  --bg-body: #f1f5f9;
+  --bg-body-to: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-card2: #ffffff;
+  --bg-sub: #f1f5f9;
+  --bg-hover: #f8fafc;
+  --bg-active: #e2e8f0;
+  --bg-btn: #e2e8f0;
+  --bg-settings: #ffffff;
+
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-dim: #cbd5e1;
+  --text-very-dim: #e2e8f0;
+  --text-emerald: #059669;
+  --text-emerald-alt: #10b981;
+  --text-gray-400: #94a3b8;
+  --text-gray-500: #64748b;
+  --text-gray-600: #475569;
+  --text-gray-700: #334155;
+
+  --border: rgba(203, 213, 225, 0.8);
+  --border-strong: rgba(148, 163, 184, 0.5);
+  --border-panel: rgba(203, 213, 225, 0.8);
+  --border-toggle: rgba(148, 163, 184, 0.4);
+
+  --overlay: rgba(0, 0, 0, 0.3);
+
+  --progress-bg: #e2e8f0;
+  --toggle-bg: #e2e8f0;
+  --active-bg: rgba(16, 185, 129, 0.15);
+  --active-border: rgba(16, 185, 129, 0.4);
+}
+
+/* ======================== APPLY VARIABLES ======================== */
+
+body {
+  background: linear-gradient(to bottom, var(--bg-body), var(--bg-body-to));
+  color: var(--text-primary);
+  overscroll-behavior: none;
+}
+
+/* Cards */
+#countdownCard,
+#widgetWrap,
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+/* Sub-background elements (inner cards) */
+#countdownCard .bg-\[#0b0e14\],
+details .rounded-xl,
+details .rounded-2xl {
+  background: var(--bg-sub);
+}
+
+/* Progress bar track */
+#countdownCard .h-1 {
+  background: var(--progress-bg);
+}
+
+/* Buttons */
+#settingsBtn,
+#themeBtn {
+  background: var(--bg-btn);
+  color: var(--text-gray-400);
+}
+#settingsBtn:hover,
+#themeBtn:hover {
+  background: var(--bg-hover);
+}
+
+/* Date text */
+#banglaDateDisplay { color: var(--text-gray-400); }
+#gregorianDateDisplay { color: var(--text-gray-500); }
+
+/* Location */
+#locationDisplay { color: var(--text-gray-500); }
+
+/* Header title */
+header h1 {
+  color: var(--text-primary);
+}
+
+/* Countdown */
+#nextPrayerName { color: var(--text-emerald); }
+#countdownDisplay { color: var(--text-primary); }
+#countdownSub { color: var(--text-gray-500); }
+#nextPrayerLabelBn,
+#nextPrayerLabelEn { color: var(--text-gray-500); }
+
+/* Nafil & Prohibited cards */
+details summary {
+  color: var(--text-gray-400);
+}
+details summary:hover {
+  color: var(--text-primary);
+}
+details .rounded-xl {
+  background: var(--bg-sub);
+}
+details .rounded-xl p:first-child {
+  color: var(--text-gray-500);
+}
+details .rounded-xl p:last-child {
+  color: var(--text-gray-400);
+}
+
+/* Prohibited items */
+#prohibitedTitle { color: var(--text-gray-400); }
+
+/* Footer */
+footer p,
+#footerPoweredWrap {
+  color: var(--text-gray-600);
+}
+footer a {
+  color: var(--text-gray-500);
+}
+footer a:hover {
+  color: var(--text-gray-400);
+}
+
+/* ======================== SETTINGS PANEL ======================== */
+
 #settingsPanel {
+  background: var(--bg-settings);
+  border-color: var(--border-panel);
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 #settingsPanel.open {
   transform: translateY(0);
 }
+#settingsPanel .border-b {
+  border-color: var(--border-panel);
+}
+#settingsPanel .border-t {
+  border-color: var(--border-panel);
+}
+#settingsPanel #settingsTitle {
+  color: var(--text-primary);
+}
+#settingsPanel .text-xs.text-gray-400 {
+  color: var(--text-gray-500);
+}
+#settingsPanel #closeSettings {
+  color: var(--text-gray-400);
+}
+#settingsPanel #closeSettings:hover {
+  background: var(--bg-hover);
+}
+#settingsPanel #settingsFooter {
+  color: var(--text-gray-500);
+}
 
+/* Language & Theme Toggle */
+#langToggle,
+#themeToggle {
+  background: var(--toggle-bg);
+  border: 1px solid var(--border-toggle);
+}
+#langToggle span,
+#themeToggle span {
+  color: var(--text-gray-500);
+  transition: all 0.2s ease;
+}
+#langToggle span.active,
+#themeToggle span.active {
+  background: var(--active-bg);
+  color: var(--text-emerald-alt);
+  border: 1px solid var(--active-border);
+}
+
+/* Overlay */
 #overlay {
+  background: var(--overlay);
   transition: opacity 0.3s ease;
   opacity: 0;
   pointer-events: none;
@@ -22,7 +233,9 @@
   pointer-events: auto;
 }
 
-/* ---- Details (collapsible) ---- */
+/* ======================== MISC ======================== */
+
+/* Details collapsible */
 details > summary {
   list-style: none;
 }
@@ -36,17 +249,17 @@ details[open] > summary .fa-chevron-down {
   transform: rotate(180deg);
 }
 
-/* ---- Widget iframe ---- */
+/* Widget iframe */
 #prayerWidget {
   transition: height 0.3s ease;
 }
 
-/* ---- Progress bar ---- */
+/* Progress bar */
 #progressBar {
   will-change: width;
 }
 
-/* ---- Animations ---- */
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -57,4 +270,15 @@ details[open] > summary .fa-chevron-down {
 #widgetWrap {
   animation: fadeIn 0.5s ease 0.1s forwards;
   opacity: 0;
+}
+
+/* Widget loading state */
+#widgetWrap.loaded {
+  opacity: 1;
+}
+
+/* Theme btn icons */
+#themeIconSun,
+#themeIconMoon {
+  font-size: 14px;
 }

@@ -32,6 +32,7 @@ function toBn(n) {
 
 let state = {
   lang: localStorage.getItem('lang') || 'bn',
+  theme: localStorage.getItem('theme') || 'dark',
   times: null,
   nextPrayer: null,
   progressPct: 0
@@ -222,7 +223,45 @@ function setLang(lang) {
   // Settings
   $('settingsTitle').textContent = bn ? 'সেটিংস' : 'Settings';
   $('langSettingLabel').textContent = bn ? 'ভাষা / Language' : 'Language';
+  $('themeSettingLabel').textContent = bn ? 'থিম / Theme' : 'Theme';
   $('footerPowered').textContent = bn ? 'Powered by' : 'Powered by';
+}
+
+// ======================== THEME ========================
+
+function setTheme(theme) {
+  state.theme = theme;
+  localStorage.setItem('theme', theme);
+
+  // Set on html element for CSS variables
+  document.documentElement.setAttribute('data-theme', theme);
+
+  // Toggle active state on settings toggle buttons
+  document.querySelectorAll('#themeToggle span').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === theme);
+  });
+
+  // Header icon
+  const isDark = theme === 'dark';
+  $('themeIconSun').classList.toggle('hidden', isDark);
+  $('themeIconMoon').classList.toggle('hidden', !isDark);
+
+  // Theme toggle button bg
+  const btn = $('themeBtn');
+  if (isDark) {
+    btn.style.background = '';
+    btn.querySelector('i').style.color = '';
+  } else {
+    btn.style.background = '#e2e8f0';
+    btn.querySelector('i').style.color = '#f59e0b';
+  }
+
+  // Setting: update toggle text
+  document.querySelectorAll('#themeToggle span').forEach(el => {
+    const bn = state.lang === 'bn';
+    if (el.dataset.theme === 'dark') el.textContent = bn ? '◐ ডার্ক' : '◐ Dark';
+    else el.textContent = bn ? '☀ লাইট' : '☀ Light';
+  });
 }
 
 // ======================== BENGALI DATE ========================
@@ -329,6 +368,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // ---- Apply language ----
   setLang(state.lang);
+
+  // ---- Theme toggle ----
+  $('themeBtn').addEventListener('click', () => {
+    const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+  });
+  $('themeToggle').addEventListener('click', function(e) {
+    const span = e.target.closest('span');
+    if (span && span.dataset.theme) setTheme(span.dataset.theme);
+  });
+  setTheme(state.theme);
 
   // ---- Load times + start countdown ----
   await fetchTimes();

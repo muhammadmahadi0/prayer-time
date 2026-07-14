@@ -231,18 +231,17 @@ function updateCountdown() {
   const h = Math.floor(remaining / 3600000);
   const m = Math.floor((remaining % 3600000) / 60000);
   const s = Math.floor((remaining % 60000) / 1000);
-  $('countdownDisplay').textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  const time = `${pad(h)}:${pad(m)}:${pad(s)}`;
 
   const bn = state.lang === 'bn';
-  if (bn) {
-    $('nextPrayerName').textContent = PRAYER_NAMES_BN[n.key];
-    $('timeRemainingLabelBn').classList.remove('hidden');
-    $('timeRemainingLabelEn').classList.add('hidden');
-  } else {
-    $('nextPrayerName').textContent = PRAYER_NAMES_EN[n.key];
-    $('timeRemainingLabelEn').classList.remove('hidden');
-    $('timeRemainingLabelBn').classList.add('hidden');
-  }
+  const pName = bn ? PRAYER_NAMES_BN[n.key] : PRAYER_NAMES_EN[n.key];
+  const remText = bn ? 'বাকি' : 'left';
+  // Show "{prayer}: {time} {remaining}" in one line
+  $('countdownDisplay').textContent = `${pName}: ${time} ${remText}`;
+  // Hide separate name/remaining labels; clean look
+  $('nextPrayerName').textContent = pName;
+  $('timeRemainingLabelBn').classList.add('hidden');
+  $('timeRemainingLabelEn').classList.add('hidden');
 }
 
 function updateProgress() {

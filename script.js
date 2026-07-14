@@ -190,12 +190,7 @@ function setLang(lang) {
   localStorage.setItem('lang', lang);
 
   document.querySelectorAll('#langToggle span').forEach(el => {
-    el.classList.toggle('bg-emerald-600/20', el.dataset.lang === lang);
-    el.classList.toggle('text-emerald-400', el.dataset.lang === lang);
-    el.classList.toggle('border', el.dataset.lang === lang);
-    el.classList.toggle('border-emerald-600/30', el.dataset.lang === lang);
-    el.classList.toggle('rounded-xl', el.dataset.lang === lang);
-    el.classList.toggle('text-gray-500', el.dataset.lang !== lang);
+    el.classList.toggle('active', el.dataset.lang === lang);
   });
 
   const bn = lang === 'bn';

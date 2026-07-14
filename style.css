@@ -6,8 +6,7 @@
 
 /* ======================== THEME: DARK (default) ======================== */
 
-:root,
-[data-theme="dark"] {
+:root {
   --bg-body: #0b0e14;
   --bg-body-to: #0d121c;
   --bg-card: #11161f;
@@ -25,10 +24,6 @@
   --text-very-dim: #374151;
   --text-emerald: #34d399;
   --text-emerald-alt: #10b981;
-  --text-gray-400: #9ca3af;
-  --text-gray-500: #6b7280;
-  --text-gray-600: #4b5563;
-  --text-gray-700: #374151;
 
   --border: rgba(31, 41, 55, 0.3);
   --border-strong: rgba(31, 41, 55, 0.5);
@@ -63,10 +58,6 @@
   --text-very-dim: #e2e8f0;
   --text-emerald: #059669;
   --text-emerald-alt: #10b981;
-  --text-gray-400: #94a3b8;
-  --text-gray-500: #64748b;
-  --text-gray-600: #475569;
-  --text-gray-700: #334155;
 
   --border: rgba(203, 213, 225, 0.8);
   --border-strong: rgba(148, 163, 184, 0.5);
@@ -98,9 +89,7 @@ details {
 }
 
 /* Sub-background elements (inner cards) */
-#countdownCard .bg-\[#0b0e14\],
-details .rounded-xl,
-details .rounded-2xl {
+details .rounded-xl {
   background: var(--bg-sub);
 }
 
@@ -113,62 +102,73 @@ details .rounded-2xl {
 #settingsBtn,
 #themeBtn {
   background: var(--bg-btn);
-  color: var(--text-gray-400);
+  color: var(--text-secondary);
 }
 #settingsBtn:hover,
 #themeBtn:hover {
   background: var(--bg-hover);
 }
 
-/* Date text */
-#banglaDateDisplay { color: var(--text-gray-400); }
-#gregorianDateDisplay { color: var(--text-gray-500); }
-
-/* Location */
-#locationDisplay { color: var(--text-gray-500); }
-
-/* Header title */
-header h1 {
-  color: var(--text-primary);
-}
+/* Header text colors */
+#banglaDateDisplay { color: var(--text-secondary); }
+#gregorianDateDisplay { color: var(--text-muted); }
+#locationDisplay { color: var(--text-muted); }
+header h1 { color: var(--text-primary); }
 
 /* Countdown */
 #nextPrayerName { color: var(--text-emerald); }
 #countdownDisplay { color: var(--text-primary); }
-#countdownSub { color: var(--text-gray-500); }
 #nextPrayerLabelBn,
-#nextPrayerLabelEn { color: var(--text-gray-500); }
+#nextPrayerLabelEn,
+#timeRemainingLabelBn,
+#timeRemainingLabelEn { color: var(--text-muted); }
 
 /* Nafil & Prohibited cards */
 details summary {
-  color: var(--text-gray-400);
+  color: var(--text-secondary);
+  transition: color 0.2s;
 }
 details summary:hover {
   color: var(--text-primary);
 }
-details .rounded-xl {
-  background: var(--bg-sub);
-}
 details .rounded-xl p:first-child {
-  color: var(--text-gray-500);
+  color: var(--text-muted);
 }
 details .rounded-xl p:last-child {
-  color: var(--text-gray-400);
+  color: var(--text-secondary);
+}
+details .rounded-xl {
+  border: 1px solid var(--border);
 }
 
-/* Prohibited items */
-#prohibitedTitle { color: var(--text-gray-400); }
+/* Prohibited section text */
+#prohSunriseLabel,
+#prohNoonLabel,
+#prohSunsetLabel {
+  color: var(--text-secondary);
+}
+#prohSunriseVal,
+#prohNoonVal,
+#prohSunsetVal {
+  color: var(--text-muted);
+}
+#prohFooter {
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+}
+#prohibitedTitle { color: var(--text-secondary); }
 
 /* Footer */
 footer p,
 #footerPoweredWrap {
-  color: var(--text-gray-600);
+  color: var(--text-dim);
 }
 footer a {
-  color: var(--text-gray-500);
+  color: var(--text-muted);
+  transition: color 0.2s;
 }
 footer a:hover {
-  color: var(--text-gray-400);
+  color: var(--text-secondary);
 }
 
 /* ======================== SETTINGS PANEL ======================== */
@@ -190,17 +190,17 @@ footer a:hover {
 #settingsPanel #settingsTitle {
   color: var(--text-primary);
 }
-#settingsPanel .text-xs.text-gray-400 {
-  color: var(--text-gray-500);
+#settingsPanel .text-xs.font-medium {
+  color: var(--text-muted);
 }
 #settingsPanel #closeSettings {
-  color: var(--text-gray-400);
+  color: var(--text-secondary);
 }
 #settingsPanel #closeSettings:hover {
   background: var(--bg-hover);
 }
 #settingsPanel #settingsFooter {
-  color: var(--text-gray-500);
+  color: var(--text-muted);
 }
 
 /* Language & Theme Toggle */
@@ -211,7 +211,7 @@ footer a:hover {
 }
 #langToggle span,
 #themeToggle span {
-  color: var(--text-gray-500);
+  color: var(--text-muted);
   transition: all 0.2s ease;
 }
 #langToggle span.active,
@@ -219,6 +219,12 @@ footer a:hover {
   background: var(--active-bg);
   color: var(--text-emerald-alt);
   border: 1px solid var(--active-border);
+  border-radius: 0.75rem;
+}
+
+/* Settings panel label */
+#settingsPanel .space-y-6 .text-xs.font-medium {
+  color: var(--text-muted);
 }
 
 /* Overlay */
@@ -235,7 +241,6 @@ footer a:hover {
 
 /* ======================== MISC ======================== */
 
-/* Details collapsible */
 details > summary {
   list-style: none;
 }
@@ -249,17 +254,13 @@ details[open] > summary .fa-chevron-down {
   transform: rotate(180deg);
 }
 
-/* Widget iframe */
 #prayerWidget {
   transition: height 0.3s ease;
 }
-
-/* Progress bar */
 #progressBar {
   will-change: width;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -271,13 +272,9 @@ details[open] > summary .fa-chevron-down {
   animation: fadeIn 0.5s ease 0.1s forwards;
   opacity: 0;
 }
-
-/* Widget loading state */
 #widgetWrap.loaded {
   opacity: 1;
 }
-
-/* Theme btn icons */
 #themeIconSun,
 #themeIconMoon {
   font-size: 14px;

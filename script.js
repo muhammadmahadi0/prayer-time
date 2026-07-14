@@ -144,6 +144,42 @@ function tick() {
   updateCountdown();
   updateProgress();
   updateDates();
+  updateNafil();
+}
+
+// ======================== NAFIL TIMES ========================
+
+function minToTimeStr(m) {
+  m = ((m % 1440) + 1440) % 1440;
+  const h = Math.floor(m / 60);
+  const mn = Math.floor(m % 60);
+  return `${pad(h)}:${pad(mn)}`;
+}
+
+function updateNafil() {
+  if (!state.times) return;
+  const f = t2m(state.times.fajr);
+  const s = t2m(state.times.sunrise);
+  const d = t2m(state.times.dhuhr);
+  const m = t2m(state.times.maghrib);
+  const i = t2m(state.times.isha);
+
+  // --- Tahajjud: last 1/3 of night (Isha → Fajr) ---
+  let nightDur;
+  if (f < i) nightDur = (1440 - i) + f; // crosses midnight
+  else nightDur = f - i;
+  if (nightDur <= 0) nightDur = 480; // fallback ~8h
+  const lastThirdStart = (i + (2 / 3) * nightDur) % 1440;
+
+  const tTime = minToTimeStr(lastThirdStart);
+  const fTime = minToTimeStr(f);
+
+  const bn = state.lang === 'bn';
+  if (bn) {
+    $('nafilTahajjudTime').textContent = `রাত ${tTime} — সাহরি (রাতের শেষ তৃতীয়াংশ)`;
+  } else {
+    $('nafilTahajjudTime').textContent = `~${tTime} — Fajr (last 1/3 of night)`;
+  }
 }
 
 // ======================== LANGUAGE ========================

@@ -234,17 +234,14 @@ function updateCountdown() {
   $('countdownDisplay').textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
 
   const bn = state.lang === 'bn';
-  const pName = bn ? PRAYER_NAMES_BN[n.key] : PRAYER_NAMES_EN[n.key];
-  // শুদ্ধ বাংলায়: "ফজরের সময় বাকি আছে", "এশার সময় বাকি আছে"
-  const bnGenitive = { fajr:'ফজরের', dhuhr:'যোহরের', asr:'আসরের', maghrib:'মাগরিবের', isha:'এশার' };
   if (bn) {
-    $('nextPrayerLabelBn').textContent = (bnGenitive[n.key] || `${pName}এর`) + ' সময় বাকি আছে';
-    $('nextPrayerLabelEn').classList.add('hidden');
-    $('nextPrayerLabelBn').classList.remove('hidden');
+    $('nextPrayerName').textContent = PRAYER_NAMES_BN[n.key];
+    $('timeRemainingLabelBn').classList.remove('hidden');
+    $('timeRemainingLabelEn').classList.add('hidden');
   } else {
-    $('nextPrayerLabelEn').textContent = `${pName} time left`;
-    $('nextPrayerLabelBn').classList.add('hidden');
-    $('nextPrayerLabelEn').classList.remove('hidden');
+    $('nextPrayerName').textContent = PRAYER_NAMES_EN[n.key];
+    $('timeRemainingLabelEn').classList.remove('hidden');
+    $('timeRemainingLabelBn').classList.add('hidden');
   }
 }
 
@@ -308,8 +305,8 @@ function setLang(lang) {
   $('appTitleEn').classList.toggle('hidden', bn);
   $('nextPrayerLabelBn').classList.toggle('hidden', !bn);
   $('nextPrayerLabelEn').classList.toggle('hidden', bn);
-  // Rebuild label text for current prayer
-  if (state.nextPrayer) updateCountdown();
+  $('timeRemainingLabelBn').classList.toggle('hidden', !bn && (!state.nextPrayer || state.nextPrayer.remaining >= 0));
+  $('timeRemainingLabelEn').classList.toggle('hidden', bn || !state.nextPrayer);
   $('nafilTitle').textContent = bn ? 'নফল নামাজ' : 'Nafil';
   $('nafilTahajjud').textContent = bn ? 'তাহাজ্জুদ' : 'Tahajjud';
   $('nafilIshraq').textContent = bn ? 'ইশরাক' : 'Ishraq';

@@ -67,6 +67,7 @@ let state = {
 
 
 // ======================== HELPERS ========================
+const CACHE_VERSION = 2; // increment to force fresh API call on old caches
 
 function $(id) { return document.getElementById(id); }
 
@@ -295,7 +296,7 @@ async function fetchPrayerTimes(locKey) {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const p = JSON.parse(cached);
-      if (p.date === dateStr && p.loc === locKey && p.rawHijri) {
+      if (p.date === dateStr && p.loc === locKey && p.rawHijri && p.cacheVer === CACHE_VERSION) {
         state.times = p.times;
         state.rawHijri = p.rawHijri;
         state.hijri = getAdjustedHijri(state.rawHijri, state.times.maghrib);
@@ -328,7 +329,7 @@ async function fetchPrayerTimes(locKey) {
 
     try {
       localStorage.setItem(cacheKey, JSON.stringify({
-        date: dateStr, loc: locKey, times: state.times, rawHijri: state.rawHijri
+        date: dateStr, loc: locKey, times: state.times, rawHijri: state.rawHijri, cacheVer: CACHE_VERSION
       }));
     } catch(e) {}
   } catch(e) {

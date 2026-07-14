@@ -1,147 +1,101 @@
 /* ========================================================================
-   Prayer Times — IslahBD Style (Dark + Emerald Green) v2 - Mobile First
+   Simple Prayer Time — Styles
    ======================================================================== */
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
-/* Selection */
-::selection { background: rgba(16, 185, 129, 0.3); }
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ---- Base ---- */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.4; }
+html {
+  scroll-behavior: smooth;
 }
 
-.fade-in {
-  animation: fadeIn 0.4s ease forwards;
+body {
+  overscroll-behavior: none;
 }
 
-/* Prayer cards */
-.prayer-card {
-  animation: fadeIn 0.35s ease forwards;
-  opacity: 0;
-}
-
-.prayer-card.active {
-  background: #059669 !important;
-  color: white !important;
-  border-radius: 14px;
-  box-shadow: 0 4px 24px rgba(5, 150, 105, 0.35);
-}
-
-.prayer-card.active .text-gray-100 {
-  color: white !important;
-}
-
-.prayer-card.active .text-gray-500 {
-  color: rgba(255, 255, 255, 0.75) !important;
-}
-
-.prayer-card:not(.active) .badge {
-  background: #1e293b;
-  color: #94a3b8;
-  border-radius: 999px;
-}
-
-.prayer-card.active .badge {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-/* Settings panel animation */
+/* ---- Settings Panel ---- */
 #settingsPanel {
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 #settingsPanel.open {
   transform: translateY(0);
 }
 
+#overlay {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
 #overlay.show {
-  display: block;
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* Location select custom */
-#locationSelect option {
-  background: #131820;
-  color: white;
+/* ---- Details (Prohibited Times) ---- */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details > summary .fa-chevron-down {
+  transition: transform 0.3s ease;
+}
+details[open] > summary .fa-chevron-down {
+  transform: rotate(180deg);
 }
 
-/* Countdown — subtle pulse (not too aggressive) */
-@keyframes pulse-countdown {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.85; }
+/* ---- Widget iframe ---- */
+#prayerWidget {
+  min-height: 480px;
 }
 
-#countdownDisplay {
-  animation: pulse-countdown 2s ease-in-out infinite;
+/* ---- Nafil Cards ---- */
+@media (max-width: 374px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-/* FAQ modal */
-#faqModal:not(.hidden) {
-  display: flex;
+/* ---- Footer ---- */
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 
-.faq-item {
-  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
-  padding-bottom: 14px;
-}
-
-.faq-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-/* Safe area for notch phones */
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-/* Disable text selection on interactive elements */
+/* ---- Touch feedback ---- */
 .touch-manipulation {
-  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-/* Progress ring transition */
-#progressRing {
-  transition: stroke-dashoffset 0.5s ease;
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0e14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 2px;
 }
 
-/* Smooth scroll for FAQ */
-#faqModal > div {
-  -webkit-overflow-scrolling: touch;
+/* ---- Language Toggle Active State ---- */
+.toggle-lang span {
+  transition: all 0.2s ease;
 }
 
-/* Better touch feel on select */
-#locationSelect {
-  -webkit-appearance: none;
+/* ---- Animation ---- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-/* Very small screens (<= 360px) */
-@media (max-width: 360px) {
-  #prayerSection {
-    grid-template-columns: 1fr !important;
-  }
-  #progressContainer {
-    justify-content: center !important;
-  }
-  #countdownDisplay {
-    font-size: 24px !important;
-  }
-}
-
-/* Dark mode scrollbar for Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #334155 transparent;
+#app > * {
+  animation: fadeIn 0.5s ease forwards;
 }

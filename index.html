@@ -3,189 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>নামাজের সময় - বাড্ডা</title>
+  <title>সিম্পল প্রেয়ার টাইম — Prayer Time</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕌</text></svg>">
 </head>
-<body class="bg-[#0b0e14] text-white min-h-screen pb-8" style="font-family: 'Noto Sans Bengali', system-ui, sans-serif;">
+<body class="bg-gradient-to-b from-[#0b0e14] to-[#0d121c] text-white min-h-screen" style="font-family: 'Noto Sans Bengali', system-ui, sans-serif;">
 
-  <div id="app" class="w-full max-w-md mx-auto px-0 overflow-hidden">
+  <div id="app" class="w-full max-w-md mx-auto px-4">
 
     <!-- ======== HEADER ======== -->
-    <div id="header" class="bg-emerald-600 text-white rounded-b-3xl overflow-hidden">
-      <!-- Location Bar -->
-      <div class="flex items-center justify-between px-4 py-3 md:px-5 md:py-3.5">
-        <div class="flex items-center gap-2 min-w-0 flex-1">
-          <i class="fas fa-map-marker-alt text-emerald-200 shrink-0"></i>
-          <span id="locationName" class="text-white font-medium text-lg truncate">বাড্ডা</span>
-          <span id="autoBadge" class="text-[9px] bg-emerald-500/30 text-emerald-200 px-1.5 py-0.5 rounded-full font-medium">স্বয়ং</span>
-        </div>
-        <button id="settingsBtn" class="w-10 h-10 shrink-0 flex items-center justify-center rounded-full hover:bg-white/10 transition active:bg-white/20 touch-manipulation">
-          <i class="fas fa-sliders-h text-white/80"></i>
+    <header class="pt-6 pb-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-lg font-bold whitespace-nowrap">
+          <span id="appTitleBn">সিম্পল প্রেয়ার টাইম</span>
+          <span id="appTitleEn" class="hidden">Simple Prayer Time</span>
+        </h1>
+        <button id="settingsBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1f2e] hover:bg-[#242b3d] active:bg-[#2d3648] transition active:scale-95">
+          <i class="fas fa-sliders-h text-gray-400 text-sm"></i>
         </button>
       </div>
+      <p class="text-[11px] text-gray-500 mt-1.5" id="subtitleBn">বাংলাদেশ — হানাফি</p>
+      <p id="subtitleEn" class="text-[11px] text-gray-500 mt-1.5 hidden">Bangladesh — Hanafi</p>
+    </header>
 
-      <!-- Date Header -->
-      <div class="bg-emerald-700/70 px-4 py-4 md:px-5 md:py-5">
-        <div class="flex justify-between items-start gap-3">
-          <div class="min-w-0 flex-shrink">
-            <p id="hijriDate" class="text-[22px] md:text-2xl font-bold leading-tight">--</p>
-            <p id="gregorianDate" class="text-sm text-emerald-100 mt-1.5 leading-tight">--</p>
-            <p id="banglaDate" class="text-[11px] text-emerald-200 mt-1.5 leading-tight">--</p>
-          </div>
-          <div class="text-right shrink-0 space-y-2.5">
-            <div class="flex items-center gap-2.5 justify-end">
-              <i class="fas fa-sun text-yellow-300 text-sm"></i>
-              <div>
-                <p class="text-[10px] text-emerald-100" id="sunriseLabel">সূর্যোদয়</p>
-                <p id="sunriseTime" class="font-mono text-base font-semibold">--:--</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2.5 justify-end">
-              <i class="fas fa-moon text-blue-200 text-sm"></i>
-              <div>
-                <p class="text-[10px] text-emerald-100" id="sunsetLabel">সূর্যাস্ত</p>
-                <p id="sunsetTime" class="font-mono text-base font-semibold">--:--</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- ======== ISLAMICFINDER WIDGET ======== -->
+    <div class="rounded-2xl overflow-hidden border border-gray-800/50 bg-[#11161f] shadow-lg">
+      <div class="p-0.5">
+        <iframe 
+          id="prayerWidget"
+          style="width:100%; height:530px; border:none; overflow:hidden; display:block; border-radius:14px;" 
+          scrolling="no"
+          src="https://www.islamicfinder.org/prayer-widget/?city=Dhaka&country=Bangladesh&method=1&school=1&timezone=Asia%2FDhaka&lang=en&theme=dark&showTable=true&showDate=true">
+        </iframe>
       </div>
     </div>
 
-    <!-- ======== CURRENT STATUS ======== -->
-    <div id="statusBar" class="bg-[#131820] mx-3 md:mx-4 -mt-3 rounded-2xl p-3 border border-gray-800/60 shadow-lg">
-      <div class="flex items-center gap-2">
-        <!-- Col 1: Sahri time -->
-        <div class="flex flex-col items-center min-w-0 w-[22%]">
-          <p class="text-[8px] text-gray-500 font-bold tracking-wider" id="sahriLabel">সাহরি</p>
-          <p id="sahriTime" class="font-mono text-base md:text-lg font-semibold text-emerald-400 leading-tight mt-0.5">--:--</p>
-        </div>
-        <!-- Col 2: Iftar time -->
-        <div class="flex flex-col items-center min-w-0 w-[22%]">
-          <p class="text-[8px] text-gray-500 font-bold tracking-wider" id="iftarLabel">ইফতার</p>
-          <p id="iftarTime" class="font-mono text-base md:text-lg font-semibold text-emerald-400 leading-tight mt-0.5">--:--</p>
-        </div>
-        <!-- Col 3: BIG countdown -->
-        <div class="flex flex-col justify-center flex-1 min-w-0">
-          <p class="text-[8px] text-gray-500 font-bold tracking-wider text-center" id="countdownLabel">ইফতারে বাকি</p>
-          <p id="countdownDisplay" class="font-mono text-[28px] md:text-4xl font-bold text-white leading-none mt-1 text-center tracking-[0.08em]">--:--:--</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ======== LOADING ======== -->
-    <div id="loading" class="hidden text-center py-12">
-      <i class="fas fa-spinner fa-spin text-emerald-400 text-3xl"></i>
-      <p class="text-gray-400 mt-3 text-sm">নামাজের সময় লোড হচ্ছে...</p>
-    </div>
-
-    <!-- ======== MAIN CONTENT ======== -->
-    <div id="mainContent" class="px-3 md:px-4 mt-5">
-
-      <!-- Prayer Times -->
-      <div id="prayerSection" class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-4 sm:gap-3 items-start">
-        <!-- Circular Progress — BIG, centered on small screens -->
-        <div id="progressContainer" class="flex-shrink-0 w-full flex justify-center sm:block">
-          <div class="relative w-[150px] h-[150px] sm:w-[160px] sm:h-[160px]">
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-center px-1">
-                <p id="currentPrayerName" class="text-sm sm:text-base text-emerald-400 font-bold leading-tight">--</p>
-                <p class="text-[10px] sm:text-xs text-gray-400 mt-1" id="segmentTypeLabel">——</p>
-                <p id="remainingTime" class="font-mono text-lg sm:text-xl font-bold text-emerald-400 mt-1">--:--:--</p>
-              </div>
-            </div>
-            <svg class="w-[150px] h-[150px] sm:w-[160px] sm:h-[160px] -rotate-90" viewBox="0 0 160 160">
-              <circle cx="80" cy="80" r="70" fill="none" stroke="#1e293b" stroke-width="8"/>
-              <circle id="progressRing" cx="80" cy="80" r="70" fill="none" stroke="#10b981"
-                      stroke-width="8" stroke-linecap="round"
-                      stroke-dasharray="439.82" stroke-dashoffset="0" 
-                      style="transition: stroke-dashoffset 0.5s ease"/>
-            </svg>
+    <!-- ======== BOTTOM CARD (Quick Info / Prohibited / Nafil) ======== -->
+    <div class="mt-5 space-y-3">
+      <!-- Nafil Times -->
+      <div class="bg-[#11161f] rounded-2xl p-4 border border-gray-800/30">
+        <h3 class="text-sm font-semibold text-emerald-400 flex items-center gap-2 mb-3">
+          <i class="fas fa-star text-emerald-500/70 text-xs"></i>
+          <span id="nafilTitle">নফল নামাজসমূহ</span>
+        </h3>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-[#0b0e14] rounded-xl p-3">
+            <p class="text-[10px] text-gray-500 font-medium" id="nafilTahajjud">তাহাজ্জুদ</p>
+            <p class="text-sm font-semibold text-gray-300 mt-0.5">রাত ১২:০০ — সাহরি</p>
+          </div>
+          <div class="bg-[#0b0e14] rounded-xl p-3">
+            <p class="text-[10px] text-gray-500 font-medium" id="nafilIshraq">ইশরাক</p>
+            <p class="text-sm font-semibold text-gray-300 mt-0.5" id="nafilIshraqTime">সূর্যোদয়ের ১৫ মিনিট পর</p>
+          </div>
+          <div class="bg-[#0b0e14] rounded-xl p-3">
+            <p class="text-[10px] text-gray-500 font-medium" id="nafilDuha">সালাতুদ দুহা</p>
+            <p class="text-sm font-semibold text-gray-300 mt-0.5" id="nafilDuhaTime">ইশরাক — যোহরের ১০ মিনিট আগে</p>
+          </div>
+          <div class="bg-[#0b0e14] rounded-xl p-3">
+            <p class="text-[10px] text-gray-500 font-medium" id="nafilAwwabin">আওয়াবীন</p>
+            <p class="text-sm font-semibold text-gray-300 mt-0.5">মাগরিবের পর — ইশার আগে</p>
           </div>
         </div>
-
-        <!-- Prayer List -->
-        <div id="prayerList" class="flex-1 min-w-0 space-y-2"></div>
       </div>
 
       <!-- Prohibited Times -->
-      <div class="mt-6 md:mt-8">
-        <div class="bg-[#131820] rounded-2xl p-4 md:p-5 border border-gray-800/30">
-          <p class="font-medium mb-3 flex items-center gap-2 text-sm" id="prohibitedTitle">
-            <i class="fas fa-ban text-red-400 text-xs"></i>সালাতের নিষিদ্ধ সময়
-          </p>
-          <div id="prohibitedList" class="space-y-2.5 text-sm"></div>
+      <details class="bg-[#11161f] rounded-2xl border border-gray-800/30 overflow-hidden">
+        <summary class="px-4 py-3.5 text-sm font-medium cursor-pointer flex items-center gap-2 text-gray-400 hover:text-white transition select-none">
+          <i class="fas fa-ban text-red-500/70 text-xs"></i>
+          <span id="prohibitedTitle">সালাতের নিষিদ্ধ সময়</span>
+          <i class="fas fa-chevron-down ml-auto text-xs opacity-50"></i>
+        </summary>
+        <div class="px-4 pb-4 space-y-2 text-sm text-gray-400 border-t border-gray-800/30 pt-3">
+          <div class="flex justify-between">
+            <span id="prohSunriseLabel">সূর্যোদয়ের সময়</span>
+            <span class="text-gray-500" id="prohSunrise">+১৫ মিনিট</span>
+          </div>
+          <div class="flex justify-between">
+            <span id="prohNoonLabel">দুপুরে সূর্য মধ্যাকাশে</span>
+            <span class="text-gray-500" id="prohNoon">যোহরের ১০ মিনিট আগে</span>
+          </div>
+          <div class="flex justify-between">
+            <span id="prohSunsetLabel">সূর্যাস্তের সময়</span>
+            <span class="text-gray-500" id="prohSunset">১৫ মিনিট আগে</span>
+          </div>
+          <div id="prohibitedFooter" class="text-[10px] text-gray-600 mt-2 border-t border-gray-800/30 pt-2">ইফতার = মাগরিবের সময়, মাগরিবের নামাজ ২-৩ মিনিট পর</div>
         </div>
-      </div>
-
-      <!-- Footer Buttons — big touch targets -->
-      <div class="mt-5 grid grid-cols-2 gap-3">
-        <button id="faqBtn" class="bg-[#131820] hover:bg-[#1a2233] active:bg-[#1e293b] border border-gray-800/40 py-4 min-h-[52px] rounded-2xl text-sm font-medium flex items-center justify-center gap-2 transition touch-manipulation select-none">
-          <i class="fas fa-question-circle text-emerald-400 shrink-0"></i>
-          <span id="faqBtnLabel">FAQ</span>
-        </button>
-        <button class="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 py-4 min-h-[52px] rounded-2xl text-sm font-medium flex items-center justify-center gap-2 transition touch-manipulation select-none">
-          <i class="fas fa-mosque shrink-0"></i>
-          <span id="nafilTitle">নফল নামাজসমূহ</span>
-        </button>
-      </div>
-
-      <!-- Footer -->
-      <div class="mt-8 text-center text-[11px] text-gray-600 pb-8" id="footerCalc">
-        University of Islamic Sciences, Karachi — Aladhan API
-      </div>
+      </details>
     </div>
+
+    <!-- ======== FOOTER ======== -->
+    <footer class="mt-8 pb-8 text-center">
+      <p class="text-[10px] text-gray-700">
+        <span id="footerPowered">Powered by</span>
+        <a href="https://islamicfinder.org" target="_blank" rel="noopener" class="text-gray-600 hover:text-gray-400 transition">IslamicFinder.org</a>
+      </p>
+    </footer>
   </div>
 
-  <!-- ======== OVERLAY ======== -->
-  <div id="overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
-
   <!-- ======== SETTINGS PANEL ======== -->
-  <div id="settingsPanel" class="fixed bottom-0 left-0 right-0 bg-[#131820] rounded-t-3xl z-50 translate-y-full transition-transform duration-400 border-t border-gray-800/50 shadow-2xl max-w-md mx-auto safe-bottom">
+  <div id="overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
+  <div id="settingsPanel" class="fixed bottom-0 left-0 right-0 bg-[#131820] rounded-t-3xl z-50 translate-y-full transition-transform duration-400 border-t border-gray-800/50 shadow-2xl max-w-md mx-auto">
     <div class="flex items-center justify-between px-5 py-4 border-b border-gray-800/50">
       <p class="font-bold text-sm" id="settingsTitle">সেটিংস</p>
       <button id="closeSettings" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition active:bg-white/20">
         <i class="fas fa-times text-gray-400"></i>
       </button>
     </div>
-
     <div class="px-5 py-5 space-y-6">
-      <!-- Language -->
       <div>
         <p class="text-xs text-gray-400 font-medium mb-2.5" id="langSettingLabel">ভাষা / Language</p>
-        <div id="langToggle" class="toggle-lang flex bg-[#0b0e14] rounded-xl overflow-hidden border border-gray-800/50">
-          <span data-lang="bn" class="flex-1 text-center py-3 text-sm cursor-pointer transition font-medium active bg-emerald-600/20 text-emerald-400 border border-emerald-600/30 rounded-xl touch-manipulation select-none">বাংলা</span>
+        <div id="langToggle" class="flex bg-[#0b0e14] rounded-xl overflow-hidden border border-gray-800/50">
+          <span data-lang="bn" class="flex-1 text-center py-3 text-sm cursor-pointer transition font-medium bg-emerald-600/20 text-emerald-400 border border-emerald-600/30 rounded-xl touch-manipulation select-none">বাংলা</span>
           <span data-lang="en" class="flex-1 text-center py-3 text-sm cursor-pointer transition font-medium text-gray-500 touch-manipulation select-none">English</span>
         </div>
       </div>
-
-      <!-- Calc Method -->
-      <div>
-        <p class="text-xs text-gray-400 font-medium mb-2.5" id="calcLabel">গণনা পদ্ধতি</p>
-        <p class="text-sm text-gray-300">ইসলামিক ফাউন্ডেশন বাংলাদেশ (Karachi Method)</p>
-      </div>
     </div>
-
     <div class="px-5 py-4 border-t border-gray-800/50 text-center">
-      <p class="text-xs text-gray-600" id="settingsFooter">ইসলাহ বিডি — নামাজের সময়সূচী</p>
-    </div>
-  </div>
-
-  <!-- ======== FAQ MODAL ======== -->
-  <div id="faqModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div id="faqOverlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
-    <div class="relative z-10 bg-[#131820] rounded-2xl p-5 w-full max-w-sm border border-gray-800/40 shadow-2xl max-h-[75vh] overflow-y-auto mx-4">
-      <div class="flex items-center justify-between mb-5">
-        <p class="font-bold text-sm" id="faqModalTitle">সচরাচর জিজ্ঞাসা</p>
-        <button id="closeFaq" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition active:bg-white/20">
-          <i class="fas fa-times text-gray-400"></i>
-        </button>
-      </div>
-      <div id="faqContent" class="space-y-5 text-sm"></div>
+      <p class="text-xs text-gray-600">v2 · সিম্পল প্রেয়ার টাইম</p>
     </div>
   </div>
 

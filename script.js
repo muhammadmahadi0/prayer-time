@@ -295,9 +295,9 @@ async function fetchPrayerTimes(locKey) {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const p = JSON.parse(cached);
-      if (p.date === dateStr && p.loc === locKey) {
+      if (p.date === dateStr && p.loc === locKey && p.rawHijri) {
         state.times = p.times;
-        state.rawHijri = p.rawHijri || null;
+        state.rawHijri = p.rawHijri;
         state.hijri = getAdjustedHijri(state.rawHijri, state.times.maghrib);
         return;
       }

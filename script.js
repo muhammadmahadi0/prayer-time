@@ -241,12 +241,13 @@ function updateCountdown() {
   const sun = state.times?.sunrise ? t2m(state.times.sunrise) : 0;
   const dhuhr = state.times?.dhuhr ? t2m(state.times.dhuhr) : 0;
   const sunriseEnd = sun + 15;
-  const duhaStart = sun + 18;
-  const duhaEnd = dhuhr - 10;
+  const ishraqEnd = sunriseEnd + 120; // 2 hours after sunrise
+  const chashtEnd = dhuhr - 10;
 
-  // Check special periods: sunrise prohibited (RED) / Duha
+  // Check special periods: sunrise prohibited (RED) / Ishraq / Chasht
   const inProhibited = sun > 0 && cm >= sun && cm < sunriseEnd;
-  const inDuha = sun > 0 && cm >= duhaStart && cm < duhaEnd;
+  const inIshraq = sun > 0 && cm >= sunriseEnd && cm < ishraqEnd;
+  const inChasht = sun > 0 && cm >= ishraqEnd && cm < chashtEnd;
 
   if (inProhibited) {
     // Sunrise prohibited — RED main timer
@@ -263,15 +264,30 @@ function updateCountdown() {
     return;
   }
 
-  if (inDuha && !inProhibited) {
-    // Duha period
-    const remainSec = (duhaEnd * 60 - (cm * 60 + now.getSeconds()) + 86400) % 86400;
+  if (inIshraq) {
+    // Ishraq period
+    const remainSec = (ishraqEnd * 60 - (cm * 60 + now.getSeconds()) + 86400) % 86400;
     const ph = Math.floor(remainSec / 3600);
     const pm = Math.floor((remainSec % 3600) / 60);
     const ps = Math.floor(remainSec % 60);
     $('countdownDisplay').textContent = `${pad(ph)}:${pad(pm)}:${pad(ps)}`;
     $('countdownDisplay').className = 'font-mono text-3xl font-bold tracking-[0.06em]';
-    $('nextPrayerName').textContent = bn ? 'সালাতুদ দুহা' : 'Salatud Duha';
+    $('nextPrayerName').textContent = bn ? 'ইশরাক' : 'Ishraq';
+    $('nextPrayerName').className = 'text-lg font-bold mt-0.5';
+    $('timeRemainingLabelBn').classList.add('hidden');
+    $('timeRemainingLabelEn').classList.add('hidden');
+    return;
+  }
+
+  if (inChasht) {
+    // Chasht period
+    const remainSec = (chashtEnd * 60 - (cm * 60 + now.getSeconds()) + 86400) % 86400;
+    const ph = Math.floor(remainSec / 3600);
+    const pm = Math.floor((remainSec % 3600) / 60);
+    const ps = Math.floor(remainSec % 60);
+    $('countdownDisplay').textContent = `${pad(ph)}:${pad(pm)}:${pad(ps)}`;
+    $('countdownDisplay').className = 'font-mono text-3xl font-bold tracking-[0.06em]';
+    $('nextPrayerName').textContent = bn ? 'চাশত' : 'Chasht';
     $('nextPrayerName').className = 'text-lg font-bold mt-0.5';
     $('timeRemainingLabelBn').classList.add('hidden');
     $('timeRemainingLabelEn').classList.add('hidden');
@@ -337,10 +353,12 @@ function updateNafil() {
   const now = getNow();
   const cm = now.getHours() * 60 + now.getMinutes();
   const cs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-  const sunriseEnd = sun + 15; // prohibited period: 15 min after sunrise
+  const sunriseEnd = sun + 15; // prohibited period
+  const ishraqEnd = sunriseEnd + 120; // 2 hours after sunrise
+  const chashtEnd = dhuhr - 10; // ends ~10min before Dhuhr
+
   const prohTimerEl = $('prohSunriseTimer');
   if (sun > 0 && cm >= sun && cm < sunriseEnd) {
-    // Currently in prohibited period — show RED countdown
     const remainSec = (sunriseEnd * 60 - cs + 86400) % 86400;
     const h = Math.floor(remainSec / 3600);
     const m2 = Math.floor((remainSec % 3600) / 60);
@@ -351,22 +369,42 @@ function updateNafil() {
     prohTimerEl.textContent = '';
   }
 
-  // ---- Duha timer ----
-  const duhaStart = sun + 18; // ~18min after sunrise (Ishraq end / Duha start)
-  const duhaEnd = dhuhr - 10;  // ends ~10min before Dhuhr
-  const duhaTimerEl = $('nafilDuhaTimer');
-  if (sun > 0 && cm < duhaStart) {
-    // Before Duha — countdown to Duha
-    const remainSec = (duhaStart * 60 - cs + 86400) % 86400;
+  // ---- Ishraq timer ----
+  const ishraqTimerEl = $('nafilIshraqTimer');
+  if (sun > 0 && cm >= sunriseEnd && cm < ishraqEnd) {
+    const remainSec = (ishraqEnd * 60 - cs + 86400) % 86400;
     const h = Math.floor(remainSec / 3600);
     const m2 = Math.floor((remainSec % 3600) / 60);
     const s = Math.floor(remainSec % 60);
-    duhaTimerEl.textContent = bn ? `${pad(h)}:${pad(m2)}:${pad(s)} বাকি` : `${pad(h)}:${pad(m2)}:${pad(s)} left`;
-  } else if (sun > 0 && cm >= duhaStart && cm < duhaEnd) {
-    // Duha time ongoing
-    duhaTimerEl.textContent = bn ? 'দুহার সময়' : 'Duha time';
+    ishraqTimerEl.textContent = bn ? `${pad(h)}:${pad(m2)}:${pad(s)} বাকি` : `${pad(h)}:${pad(m2)}:${pad(s)} left`;
+  } else if (sun > 0 && cm < sunriseEnd) {
+    // Before Ishraq — show "--:--:-- বাকি"
+    const remainSec = (sunriseEnd * 60 - cs + 86400) % 86400;
+    const h = Math.floor(remainSec / 3600);
+    const m2 = Math.floor((remainSec % 3600) / 60);
+    const s = Math.floor(remainSec % 60);
+    ishraqTimerEl.textContent = bn ? `${pad(h)}:${pad(m2)}:${pad(s)} বাকি` : `${pad(h)}:${pad(m2)}:${pad(s)} left`;
   } else {
-    duhaTimerEl.textContent = '';
+    ishraqTimerEl.textContent = '';
+  }
+
+  // ---- Chasht timer ----
+  const chashtTimerEl = $('nafilChashtTimer');
+  if (sun > 0 && cm >= ishraqEnd && cm < chashtEnd) {
+    const remainSec = (chashtEnd * 60 - cs + 86400) % 86400;
+    const h = Math.floor(remainSec / 3600);
+    const m2 = Math.floor((remainSec % 3600) / 60);
+    const s = Math.floor(remainSec % 60);
+    chashtTimerEl.textContent = bn ? `${pad(h)}:${pad(m2)}:${pad(s)} বাকি` : `${pad(h)}:${pad(m2)}:${pad(s)} left`;
+  } else if (sun > 0 && cm < ishraqEnd) {
+    // Before Chasht — countdown to Chasht
+    const remainSec = (ishraqEnd * 60 - cs + 86400) % 86400;
+    const h = Math.floor(remainSec / 3600);
+    const m2 = Math.floor((remainSec % 3600) / 60);
+    const s = Math.floor(remainSec % 60);
+    chashtTimerEl.textContent = bn ? `${pad(h)}:${pad(m2)}:${pad(s)} বাকি` : `${pad(h)}:${pad(m2)}:${pad(s)} left`;
+  } else {
+    chashtTimerEl.textContent = '';
   }
 }
 
@@ -395,9 +433,10 @@ function setLang(lang) {
   $('nafilTitle').textContent = bn ? 'নফল নামাজ' : 'Nafil';
   $('nafilTahajjud').textContent = bn ? 'তাহাজ্জুদ' : 'Tahajjud';
   $('nafilIshraq').textContent = bn ? 'ইশরাক' : 'Ishraq';
-  $('nafilDuha').textContent = bn ? 'সালাতুদ দুহা' : 'Salatud Duha';
+  $('nafilIshraqTime').textContent = bn ? 'সূর্যোদয় +১৫মি — ২ঘ' : 'Sunrise +15m — 2h';
+  $('nafilChasht').textContent = bn ? 'চাশত' : 'Chasht';
+  $('nafilChashtTime').textContent = bn ? 'ইশরাক+২ঘ — যোহর' : 'Ishraq+2h — Dhuhr';
   $('nafilAwwabin').textContent = bn ? 'আওয়াবীন' : 'Awwabin';
-  $('nafilIshraqTime').textContent = bn ? 'সূর্যোদয় +১৫মি' : 'Sunrise +15m';
   $('prohibitedTitle').textContent = bn ? 'নিষিদ্ধ সময়' : 'Prohibited';
   $('prohSunriseLabel').textContent = bn ? 'সূর্যোদয়' : 'Sunrise';
   $('prohNoonLabel').textContent = bn ? 'সূর্য মধ্যাকাশে' : 'Zenith';

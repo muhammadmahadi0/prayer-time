@@ -117,7 +117,9 @@ header h1 { color: var(--text-primary); }
 
 /* Countdown */
 #nextPrayerName { color: var(--text-emerald); }
+#nextPrayerName.prohibited { color: #ef4444; }
 #countdownDisplay { color: var(--text-primary); }
+#countdownDisplay.text-red-500 { color: #ef4444; }
 #nextPrayerLabelBn,
 #nextPrayerLabelEn,
 #timeRemainingLabelBn,

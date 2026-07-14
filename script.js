@@ -190,42 +190,35 @@ function setLang(lang) {
 
 // ======================== WIDGET SIZING ========================
 
+// Listen for IslamicFinder postMessage auto-height (if supported)
+window.addEventListener('message', function(e) {
+  if (e.origin !== 'https://www.islamicfinder.org') return;
+  try {
+    const d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+    if (d.height && typeof d.height === 'number') {
+      $('prayerWidget').style.height = d.height + 'px';
+    }
+  } catch {}
+});
+
 function sizeWidget() {
   const w = $('prayerWidget');
-  const wrap = $('widgetWrap');
-  if (!w || !wrap) return;
+  if (!w) return;
 
-  // Try to detect widget content height.
-  // The IslamicFinder widget loads asynchronously, so we wait and then set height.
-  // If the widget supports postMessage auto-height, it would work here.
-  // Otherwise, we use a reasonable estimate based on typical widget output.
-  
-  // Wait for the widget to load, then try different heights
-  let attempts = 0;
-  const check = setInterval(() => {
-    attempts++;
-    try {
-      // Try to access iframe content — will fail cross-origin, but we try anyway
-      const body = w.contentDocument?.body;
-      if (body) {
-        const h = body.scrollHeight;
-        if (h > 100) {
-          w.style.height = h + 'px';
-          clearInterval(check);
-          return;
-        }
+  // IslamicFinder widget loads async; set initial reasonable height,
+  // then rely on postMessage for exact sizing.
+  w.style.height = '340px';
+
+  // After load, try once more
+  w.addEventListener('load', function onLoad() {
+    // Give it a moment to render, then set a default if postMessage didn't fire
+    setTimeout(() => {
+      // If postMessage hasn't set a height yet, use a safe default
+      if (w.style.height === '340px' || w.style.height === '0px') {
+        w.style.height = '360px';
       }
-    } catch(e) {
-      // Cross-origin — this is expected
-    }
-    // Fallback: use pre-set heights
-    const heights = [340, 360, 380, 400, 320];
-    if (attempts <= heights.length) {
-      w.style.height = heights[attempts-1] + 'px';
-    } else {
-      clearInterval(check);
-    }
-  }, 300);
+    }, 2000);
+  });
 }
 
 // ======================== INIT ========================

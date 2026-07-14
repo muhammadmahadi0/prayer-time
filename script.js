@@ -211,7 +211,7 @@ const BN_MONTH_NAMES = ['জানুয়ারি', 'ফেব্রুয়
 
 function getBanglaDate(g) {
   const y = g.getFullYear(), m = g.getMonth() + 1, d = g.getDate();
-  const by = (m > 4 || (m === 4 && d >= 14)) ? y - 594 : y - 595;
+  const by = (m > 4 || (m === 4 && d >= 14)) ? y - 593 : y - 594;
   let startYear = y;
   if (m < 4 || (m === 4 && d < 14)) startYear = y - 1;
   const ye = BN_MONTHS.map(mm => {

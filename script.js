@@ -143,6 +143,7 @@ function tick() {
   findNext();
   updateCountdown();
   updateProgress();
+  updateDates();
 }
 
 // ======================== LANGUAGE ========================
@@ -188,7 +189,52 @@ function setLang(lang) {
   $('footerPowered').textContent = bn ? 'Powered by' : 'Powered by';
 }
 
-// ======================== WIDGET SIZING ========================
+// ======================== BENGALI DATE ========================
+
+const BN_MONTHS = [
+  { en: 'Boishakh',  bn: 'বৈশাখ',  ms: 4, ds: 14 },
+  { en: 'Joishtho',  bn: 'জ্যৈষ্ঠ', ms: 5, ds: 15 },
+  { en: 'Ashaarh',   bn: 'আষাঢ়',  ms: 6, ds: 15 },
+  { en: 'Srabon',    bn: 'শ্রাবণ',  ms: 7, ds: 16 },
+  { en: 'Bhadro',    bn: 'ভাদ্র',   ms: 8, ds: 17 },
+  { en: 'Ashshin',   bn: 'আশ্বিন',  ms: 9, ds: 17 },
+  { en: 'Kartik',    bn: 'কার্তিক', ms: 10, ds: 16 },
+  { en: 'Agrahayon', bn: 'অগ্রহায়ণ', ms: 11, ds: 15 },
+  { en: 'Poush',     bn: 'পৌষ',    ms: 12, ds: 15 },
+  { en: 'Magh',      bn: 'মাঘ',    ms: 1, ds: 14 },
+  { en: 'Falgun',    bn: 'ফাল্গুন', ms: 2, ds: 13 },
+  { en: 'Choitro',   bn: 'চৈত্র',   ms: 3, ds: 15 }
+];
+
+const BN_DAYS = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+const BN_MONTH_NAMES = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+
+function getBanglaDate(g) {
+  const y = g.getFullYear(), m = g.getMonth() + 1, d = g.getDate();
+  const by = (m > 4 || (m === 4 && d >= 14)) ? y - 594 : y - 595;
+  let startYear = y;
+  if (m < 4 || (m === 4 && d < 14)) startYear = y - 1;
+  const ye = BN_MONTHS.map(mm => {
+    let ty = startYear;
+    if (mm.ms <= 3) ty = startYear + 1;
+    return { ...mm, date: new Date(ty, mm.ms - 1, mm.ds) };
+  });
+  let bm = ye[0];
+  for (const ms of ye) { if (ms.date <= g) bm = ms; }
+  const diff = Math.round((g - bm.date) / 86400000);
+  return { day: diff + 1, monthEn: bm.en, monthBn: bm.bn, year: by };
+}
+
+function updateDates() {
+  const now = getNow();
+  // Bengali
+  const bd = getBanglaDate(now);
+  $('banglaDateDisplay').textContent = `${toBn(bd.day)} ${bd.monthBn} ${toBn(bd.year)}`;
+  // Gregorian
+  const wd = BN_DAYS[now.getDay()];
+  const mn = BN_MONTH_NAMES[now.getMonth()];
+  $('gregorianDateDisplay').textContent = `${wd}, ${toBn(now.getDate())} ${mn} ${toBn(now.getFullYear())}`;
+}
 
 // Listen for IslamicFinder postMessage auto-height (if supported)
 window.addEventListener('message', function(e) {

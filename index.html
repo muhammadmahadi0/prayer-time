@@ -31,7 +31,7 @@
     </header>
 
     <!-- ======== NEXT PRAYER COUNTDOWN ======== -->
-    <div id="countdownCard" class="bg-[#11161f] rounded-2xl p-4 border border-gray-800/40 mb-4">
+    <div id="countdownCard" class="bg-[#11161f] rounded-2xl p-4 border border-gray-800/40 mb-3">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-[10px] text-gray-500 font-medium tracking-wider">
@@ -48,17 +48,22 @@
           </p>
         </div>
       </div>
-      <!-- Progress bar -->
       <div class="mt-3 h-1 bg-[#0b0e14] rounded-full overflow-hidden">
         <div id="progressBar" class="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
       </div>
+    </div>
+
+    <!-- ======== DATE DISPLAY ======== -->
+    <div class="flex items-center justify-between px-1 mb-3">
+      <p id="banglaDateDisplay" class="text-xs text-gray-400">--</p>
+      <p id="gregorianDateDisplay" class="text-[10px] text-gray-600">--</p>
     </div>
 
     <!-- ======== ISLAMICFINDER WIDGET ======== -->
     <div class="rounded-2xl overflow-hidden border border-gray-800/40 bg-[#11161f] shadow-lg" id="widgetWrap">
       <iframe 
         id="prayerWidget"
-        style="width:100%; border: none; display:block;"
+        style="width:100%; border: 1px solid #ddd; display:block; height: auto;"
         scrolling="no"
         title="Prayer Times"
         src="https://www.islamicfinder.org/prayer-widget/1185241/hanfi/3/0/18.0/18.0">

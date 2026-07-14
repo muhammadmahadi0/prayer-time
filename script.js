@@ -389,9 +389,27 @@ function updateDates() {
 function updateWidget() {
   const d = getCurrentDistrict();
   const id = d.ifId;
-  if (id) {
-    $('prayerWidget').src = `https://www.islamicfinder.org/prayer-widget/${id}/hanfi/3/0/18/18`;
-  }
+  if (!id) return;
+
+  const wrap = $('widgetWrap');
+  if (!wrap) return;
+
+  // Rebuild iframe to force clean reload
+  const oldFrame = $('prayerWidget');
+  const newFrame = document.createElement('iframe');
+  newFrame.id = 'prayerWidget';
+  newFrame.style.cssText = oldFrame.style.cssText || 'width:100%; border:1px solid #ddd; display:block; height:auto';
+  newFrame.scrolling = 'no';
+  newFrame.title = 'Prayer Times';
+  newFrame.src = `https://www.islamicfinder.org/prayer-widget/${id}/hanfi/3/0/18.0/18.0`;
+  newFrame.addEventListener('load', function onLoad() {
+    setTimeout(() => {
+      if (newFrame.style.height === '340px' || newFrame.style.height === '0px' || !newFrame.style.height || newFrame.style.height === 'auto') {
+        newFrame.style.height = '360px';
+      }
+    }, 2000);
+  });
+  oldFrame.parentNode.replaceChild(newFrame, oldFrame);
 }
 
 // ======================== WIDGET ========================

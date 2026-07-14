@@ -233,15 +233,13 @@ function updateCountdown() {
   const s = Math.floor((remaining % 60000) / 1000);
   $('countdownDisplay').textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
 
-  // Show CURRENT prayer instead of next prayer
   const bn = state.lang === 'bn';
-  const curKey = nextPrayer ? current : '';
   if (bn) {
-    $('currentPrayerName').textContent = curKey ? PRAYER_NAMES_BN[curKey] : PRAYER_NAMES_BN[n.key];
+    $('nextPrayerName').textContent = PRAYER_NAMES_BN[n.key];
     $('timeRemainingLabelBn').classList.remove('hidden');
     $('timeRemainingLabelEn').classList.add('hidden');
   } else {
-    $('currentPrayerName').textContent = curKey ? PRAYER_NAMES_EN[curKey] : PRAYER_NAMES_EN[n.key];
+    $('nextPrayerName').textContent = PRAYER_NAMES_EN[n.key];
     $('timeRemainingLabelEn').classList.remove('hidden');
     $('timeRemainingLabelBn').classList.add('hidden');
   }
@@ -305,8 +303,8 @@ function setLang(lang) {
   const bn = lang === 'bn';
   $('appTitleBn').classList.toggle('hidden', !bn);
   $('appTitleEn').classList.toggle('hidden', bn);
-  $('currentPrayerLabelBn').classList.toggle('hidden', !bn);
-  $('currentPrayerLabelEn').classList.toggle('hidden', bn);
+  $('nextPrayerLabelBn').classList.toggle('hidden', !bn);
+  $('nextPrayerLabelEn').classList.toggle('hidden', bn);
   $('timeRemainingLabelBn').classList.toggle('hidden', !bn && (!state.nextPrayer || state.nextPrayer.remaining >= 0));
   $('timeRemainingLabelEn').classList.toggle('hidden', bn || !state.nextPrayer);
   $('nafilTitle').textContent = bn ? 'নফল নামাজ' : 'Nafil';

@@ -279,3 +279,40 @@ details[open] > summary .fa-chevron-down {
 #themeIconMoon {
   font-size: 14px;
 }
+
+/* ======================== TIMES TABLE ======================== */
+
+#timesTable {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+#timesTable .time-slot {
+  padding: 8px 4px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+#timesTable .time-slot.slot-next {
+  background: var(--active-bg);
+  border: 1px solid var(--active-border);
+}
+#timesTable .time-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+#timesTable .time-value {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+}
+#timesTable .time-slot.slot-next .time-value {
+  color: var(--text-emerald);
+}
+#timesTable .time-slot.slot-next .time-label {
+  color: var(--text-emerald);
+}
+#timesSource {
+  color: var(--text-dim);
+}

@@ -188,6 +188,7 @@ function tick() {
   updateProgress();
   updateDates();
   updateNafil();
+  updateTimesTable();
 }
 
 // ======================== NAFIL TIMES ========================
@@ -223,6 +224,45 @@ function updateNafil() {
   } else {
     $('nafilTahajjudTime').textContent = `~${tTime} — Fajr (last 1/3 of night)`;
   }
+}
+
+// ======================== TIMES TABLE ========================
+
+function updateTimesTable() {
+  if (!state.times) return;
+  const bn = state.lang === 'bn';
+  const labels = bn
+    ? { fajr: 'ফজর', dhuhr: 'যোহর', asr: 'আসর', maghrib: 'মাগরিব', isha: 'ইশা' }
+    : { fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
+
+  const order = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  for (const key of order) {
+    const slot = $('timesGrid').querySelector(`[data-prayer="${key}"]`);
+    if (!slot) continue;
+    const t = state.times[key];
+    if (t) {
+      slot.querySelector('.time-value').textContent = t.slice(0, 5);
+    }
+    slot.querySelector('.time-label').textContent = labels[key];
+  }
+
+  // Highlight the current/next prayer
+  const now = getNow();
+  const cm = now.getHours() * 60 + now.getMinutes();
+  const order2 = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  let nextIdx = -1;
+  for (let i = 0; i < order2.length; i++) {
+    const tm = t2m(state.times[order2[i]]);
+    if (cm < tm) { nextIdx = i; break; }
+  }
+  if (nextIdx === -1) nextIdx = 0; // next is fajr (tomorrow)
+
+  // Class: highlight the NEXT prayer
+  document.querySelectorAll('#timesGrid .time-slot').forEach(el => {
+    el.classList.remove('slot-now', 'slot-next');
+  });
+  const activeEl = document.querySelector(`#timesGrid [data-prayer="${order2[nextIdx]}"]`);
+  if (activeEl) activeEl.classList.add('slot-next');
 }
 
 // ======================== LANGUAGE ========================

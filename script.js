@@ -265,8 +265,8 @@ function updateCountdown() {
   }
 
   if (inIshraq) {
-    // Ishraq period
-    const remainSec = (ishraqEnd * 60 - (cm * 60 + now.getSeconds()) + 86400) % 86400;
+    // Ishraq name — counts down to Chasht end (same period as Salatud Duha)
+    const remainSec = (chashtEnd * 60 - (cm * 60 + now.getSeconds()) + 86400) % 86400;
     const ph = Math.floor(remainSec / 3600);
     const pm = Math.floor((remainSec % 3600) / 60);
     const ps = Math.floor(remainSec % 60);
@@ -280,7 +280,7 @@ function updateCountdown() {
   }
 
   if (inChasht) {
-    // Chasht period
+    // Chasht name — same countdown target as Ishraq
     const remainSec = (chashtEnd * 60 - (cm * 60 + now.getSeconds()) + 86400) % 86400;
     const ph = Math.floor(remainSec / 3600);
     const pm = Math.floor((remainSec % 3600) / 60);
@@ -372,13 +372,13 @@ function updateNafil() {
   // ---- Ishraq timer ----
   const ishraqTimerEl = $('nafilIshraqTimer');
   if (sun > 0 && cm >= sunriseEnd && cm < ishraqEnd) {
-    const remainSec = (ishraqEnd * 60 - cs + 86400) % 86400;
+    const remainSec = (chashtEnd * 60 - cs + 86400) % 86400;
     const h = Math.floor(remainSec / 3600);
     const m2 = Math.floor((remainSec % 3600) / 60);
     const s = Math.floor(remainSec % 60);
     ishraqTimerEl.textContent = bn ? `${pad(h)}:${pad(m2)}:${pad(s)} বাকি` : `${pad(h)}:${pad(m2)}:${pad(s)} left`;
   } else if (sun > 0 && cm < sunriseEnd) {
-    // Before Ishraq — show "--:--:-- বাকি"
+    // Before Ishraq — show countdown to Ishraq start (sunriseEnd)
     const remainSec = (sunriseEnd * 60 - cs + 86400) % 86400;
     const h = Math.floor(remainSec / 3600);
     const m2 = Math.floor((remainSec % 3600) / 60);

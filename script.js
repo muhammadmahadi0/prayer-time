@@ -55,10 +55,10 @@ async function fetchTimes() {
     };
     return true;
   } catch(e) {
-    // Fallback
+    // Fallback (approx Dhaka)
     state.times = {
-      fajr: '04:15', sunrise: '05:15', dhuhr: '12:00',
-      asr: '15:40', maghrib: '18:45', isha: '19:55'
+      fajr: '03:54', sunrise: '05:20', dhuhr: '12:04',
+      asr: '16:44', maghrib: '18:48', isha: '20:14'
     };
     return false;
   }

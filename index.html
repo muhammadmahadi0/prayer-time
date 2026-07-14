@@ -15,15 +15,13 @@
   <div id="app" class="w-full max-w-md mx-auto px-4">
 
     <!-- ======== HEADER ======== -->
-    <header class="pt-5 pb-3">
+    <header class="pt-5 pb-2">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-base font-bold">
             <span id="appTitleBn">সিম্পল প্রেয়ার টাইম</span>
             <span id="appTitleEn" class="hidden">Prayer Time</span>
           </h1>
-          <p id="locationDisplay" class="text-[10px] mt-0.5">বাংলাদেশ</p>
-          <span id="autoBadge" class="text-[8px] bg-emerald-500/20 text-emerald-500 px-1.5 py-0.5 rounded-full font-medium ml-1 hidden">স্বয়ং</span>
         </div>
         <div class="flex items-center gap-2">
           <button id="themeBtn" class="w-9 h-9 flex items-center justify-center rounded-xl transition active:scale-95">
@@ -34,6 +32,12 @@
             <i class="fas fa-sliders-h text-xs"></i>
           </button>
         </div>
+      </div>
+      <!-- District dropdown row -->
+      <div class="flex items-center gap-2 mt-2">
+        <i class="fas fa-map-marker-alt text-[10px] opacity-50"></i>
+        <select id="districtSelect" class="appearance-none text-xs font-medium rounded-lg px-3 py-1.5 pr-7 cursor-pointer outline-none min-w-0 max-w-full"></select>
+        <p id="locationDisplay" class="text-[9px] opacity-60 hidden"></p>
       </div>
     </header>
 
@@ -64,33 +68,6 @@
     <div class="flex items-center justify-between px-1 mb-3">
       <p id="banglaDateDisplay" class="text-xs">--</p>
       <p id="gregorianDateDisplay" class="text-[10px]">--</p>
-    </div>
-
-    <!-- ======== PRAYER TIMES TABLE (Hanafi) ======== -->
-    <div id="timesTable" class="rounded-2xl p-3 mb-3">
-      <div class="grid grid-cols-5 gap-1 text-center" id="timesGrid">
-        <div class="time-slot" data-prayer="fajr">
-          <p class="time-label">ফজর</p>
-          <p class="time-value">--:--</p>
-        </div>
-        <div class="time-slot" data-prayer="dhuhr">
-          <p class="time-label">যোহর</p>
-          <p class="time-value">--:--</p>
-        </div>
-        <div class="time-slot" data-prayer="asr">
-          <p class="time-label">আসর</p>
-          <p class="time-value">--:--</p>
-        </div>
-        <div class="time-slot" data-prayer="maghrib">
-          <p class="time-label">মাগরিব</p>
-          <p class="time-value">--:--</p>
-        </div>
-        <div class="time-slot" data-prayer="isha">
-          <p class="time-label">ইশা</p>
-          <p class="time-value">--:--</p>
-        </div>
-      </div>
-      <p class="text-[8px] text-center mt-1" id="timesSource">Aladhan API · হানাফী (school=1)</p>
     </div>
 
     <!-- ======== ISLAMICFINDER WIDGET ======== -->
@@ -187,6 +164,10 @@
         </div>
       </div>
       <div>
+        <p class="text-xs font-medium mb-2.5" id="districtSettingLabel">জেলা / District</p>
+        <select id="settingsDistrictSelect" class="w-full rounded-xl px-4 py-3 text-sm cursor-pointer outline-none"></select>
+      </div>
+      <div>
         <p class="text-xs font-medium mb-2.5" id="themeSettingLabel">থিম / Theme</p>
         <div id="themeToggle" class="flex rounded-xl overflow-hidden">
           <span data-theme="dark" class="flex-1 text-center py-3 text-sm cursor-pointer font-medium rounded-xl select-none">◐ ডার্ক</span>
@@ -195,7 +176,7 @@
       </div>
     </div>
     <div class="px-5 py-4 text-center">
-      <p class="text-xs" id="settingsFooter">v2 · সিম্পল প্রেয়ার টাইম</p>
+      <p class="text-xs" id="settingsFooter">v2 · ৬৪ জেলা · হানাফী</p>
     </div>
   </div>
 

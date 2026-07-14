@@ -1,11 +1,80 @@
 /* ========================================================================
    Simple Prayer Time — Countdown + Settings
+   Bangladesh-only — 64 district dropdown
    ======================================================================== */
+
+// ======================== BANGLADESH DISTRICTS (64) ========================
+
+const DISTRICTS = [
+  { bn: 'ঢাকা',       en: 'Dhaka',        lat: 23.8103, lng: 90.4125 },
+  { bn: 'ফরিদপুর',    en: 'Faridpur',     lat: 23.6070, lng: 89.8414 },
+  { bn: 'গাজীপুর',    en: 'Gazipur',      lat: 23.9999, lng: 90.4203 },
+  { bn: 'গোপালগঞ্জ',  en: 'Gopalganj',    lat: 23.0068, lng: 89.8285 },
+  { bn: 'জামালপুর',   en: 'Jamalpur',     lat: 24.9375, lng: 89.9375 },
+  { bn: 'কিশোরগঞ্জ',  en: 'Kishoreganj',  lat: 24.4262, lng: 90.9840 },
+  { bn: 'মাদারীপুর',  en: 'Madaripur',    lat: 23.1705, lng: 90.2051 },
+  { bn: 'মানিকগঞ্জ',  en: 'Manikganj',    lat: 23.8617, lng: 90.0047 },
+  { bn: 'মুন্সীগঞ্জ', en: 'Munshiganj',   lat: 23.5422, lng: 90.5308 },
+  { bn: 'ময়মনসিংহ',  en: 'Mymensingh',   lat: 24.7471, lng: 90.4203 },
+  { bn: 'নারায়ণগঞ্জ',en: 'Narayanganj',  lat: 23.6238, lng: 90.5014 },
+  { bn: 'নরসিংদী',    en: 'Narsingdi',    lat: 23.9205, lng: 90.7221 },
+  { bn: 'নেত্রকোণা',  en: 'Netrokona',    lat: 24.8845, lng: 90.7286 },
+  { bn: 'রাজবাড়ী',   en: 'Rajbari',      lat: 23.7582, lng: 89.6427 },
+  { bn: 'শরীয়তপুর',  en: 'Shariatpur',   lat: 23.2072, lng: 90.3502 },
+  { bn: 'শেরপুর',     en: 'Sherpur',      lat: 25.0733, lng: 90.1677 },
+  { bn: 'টাঙ্গাইল',    en: 'Tangail',      lat: 24.2469, lng: 89.9201 },
+  { bn: 'বান্দরবান',  en: 'Bandarban',    lat: 22.1953, lng: 92.2184 },
+  { bn: 'ব্রাহ্মণবাড়িয়া', en: 'Brahmanbaria', lat: 23.9570, lng: 91.1103 },
+  { bn: 'চাঁদপুর',    en: 'Chandpur',     lat: 23.2325, lng: 90.6631 },
+  { bn: 'চট্টগ্রাম',  en: 'Chittagong',   lat: 22.3569, lng: 91.7832 },
+  { bn: 'কুমিল্লা',   en: 'Comilla',      lat: 23.4607, lng: 91.1809 },
+  { bn: 'কক্সবাজার',  en: 'Cox\'s Bazar', lat: 21.4272, lng: 92.0063 },
+  { bn: 'ফেনী',       en: 'Feni',         lat: 22.9406, lng: 91.4145 },
+  { bn: 'খাগড়াছড়ি', en: 'Khagrachari',  lat: 23.1346, lng: 91.5048 },
+  { bn: 'লক্ষ্মীপুর', en: 'Lakshmipur',   lat: 22.9447, lng: 90.8270 },
+  { bn: 'নোয়াখালী',  en: 'Noakhali',     lat: 22.8724, lng: 91.1066 },
+  { bn: 'রাঙ্গামাটি', en: 'Rangamati',    lat: 22.6493, lng: 92.1721 },
+  { bn: 'হবিগঞ্জ',    en: 'Habiganj',     lat: 24.3814, lng: 91.4182 },
+  { bn: 'মৌলভীবাজার',en: 'Moulvibazar',  lat: 24.4864, lng: 91.7713 },
+  { bn: 'সুনামগঞ্জ',  en: 'Sunamganj',    lat: 25.0713, lng: 91.4023 },
+  { bn: 'সিলেট',      en: 'Sylhet',       lat: 24.8949, lng: 91.8687 },
+  { bn: 'বাগেরহাট',   en: 'Bagerhat',     lat: 22.6608, lng: 89.7909 },
+  { bn: 'চুয়াডাঙ্গা', en: 'Chuadanga',    lat: 23.6440, lng: 88.8524 },
+  { bn: 'যশোর',       en: 'Jessore',      lat: 23.1634, lng: 89.2183 },
+  { bn: 'ঝিনাইদহ',    en: 'Jhenaidah',    lat: 23.5451, lng: 89.1786 },
+  { bn: 'খুলনা',      en: 'Khulna',       lat: 22.8456, lng: 89.5403 },
+  { bn: 'কুষ্টিয়া',  en: 'Kushtia',      lat: 23.9014, lng: 89.1206 },
+  { bn: 'মাগুরা',     en: 'Magura',       lat: 23.4870, lng: 89.4193 },
+  { bn: 'মেহেরপুর',   en: 'Meherpur',     lat: 23.7778, lng: 88.6367 },
+  { bn: 'নড়াইল',     en: 'Narail',       lat: 23.1545, lng: 89.5017 },
+  { bn: 'সাতক্ষীরা',  en: 'Satkhira',     lat: 22.7190, lng: 89.0692 },
+  { bn: 'বরগুনা',     en: 'Barguna',      lat: 22.1504, lng: 90.1346 },
+  { bn: 'বরিশাল',     en: 'Barisal',      lat: 22.7010, lng: 90.3535 },
+  { bn: 'ভোলা',       en: 'Bhola',        lat: 22.6870, lng: 90.6495 },
+  { bn: 'ঝালকাঠি',    en: 'Jhalokati',    lat: 22.6426, lng: 90.1988 },
+  { bn: 'পটুয়াখালী', en: 'Patuakhali',   lat: 22.3529, lng: 90.3292 },
+  { bn: 'পিরোজপুর',   en: 'Pirojpur',     lat: 22.5841, lng: 89.9679 },
+  { bn: 'বগুড়া',     en: 'Bogura',       lat: 24.8466, lng: 89.3733 },
+  { bn: 'জয়পুরহাট',  en: 'Joypurhat',    lat: 25.1017, lng: 89.0249 },
+  { bn: 'নওগাঁ',      en: 'Naogaon',      lat: 24.7949, lng: 88.9577 },
+  { bn: 'নাটোর',      en: 'Natore',       lat: 24.4100, lng: 88.9949 },
+  { bn: 'নবাবগঞ্জ',   en: 'Nawabganj',    lat: 24.5963, lng: 88.2746 },
+  { bn: 'পাবনা',      en: 'Pabna',        lat: 24.0064, lng: 89.2451 },
+  { bn: 'রাজশাহী',    en: 'Rajshahi',     lat: 24.3636, lng: 88.6241 },
+  { bn: 'সিরাজগঞ্জ',  en: 'Sirajganj',    lat: 24.4574, lng: 89.7064 },
+  { bn: 'দিনাজপুর',   en: 'Dinajpur',     lat: 25.6277, lng: 88.6338 },
+  { bn: 'গাইবান্ধা',   en: 'Gaibandha',    lat: 25.3289, lng: 89.5433 },
+  { bn: 'কুড়িগ্রাম', en: 'Kurigram',     lat: 25.8073, lng: 89.6489 },
+  { bn: 'লালমনিরহাট', en: 'Lalmonirhat',  lat: 25.9923, lng: 89.2847 },
+  { bn: 'নীলফামারী',  en: 'Nilphamari',   lat: 25.9494, lng: 88.9546 },
+  { bn: 'পঞ্চগড়',    en: 'Panchagarh',   lat: 26.3386, lng: 88.5618 },
+  { bn: 'রংপুর',      en: 'Rangpur',      lat: 25.7466, lng: 89.2517 },
+  { bn: 'ঠাকুরগাঁও',  en: 'Thakurgaon',   lat: 26.0334, lng: 88.4667 }
+];
 
 // ======================== CONFIG ========================
 
 const API_BASE = 'https://api.aladhan.com/v1';
-const GEO_API = 'https://ipapi.co/json/';
 const PRAYER_NAMES_BN = { fajr: 'ফজর', dhuhr: 'যোহর', asr: 'আসর', maghrib: 'মাগরিব', isha: 'ইশা' };
 const PRAYER_NAMES_EN = { fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
 const PRAYER_ORDER = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -15,12 +84,10 @@ const PRAYER_ORDER = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
 function $(id) { return document.getElementById(id); }
 function t2m(t) { const [h,m]=t.split(':'); return +h*60+ +m; }
 
-/** Return current time in a given UTC-offset timezone (default: +6 BD) */
-function getNow(offset) {
-  offset = offset != null ? offset : (state.tzOffset || 6);
+function getNow() {
   const d = new Date();
   const utc = d.getTime() + d.getTimezoneOffset() * 60000;
-  return new Date(utc + offset * 3600000);
+  return new Date(utc + 6 * 3600000); // BD always UTC+6
 }
 
 function pad(n) { return String(n).padStart(2, '0'); }
@@ -32,79 +99,80 @@ function toBn(n) {
 
 // ======================== STATE ========================
 
+// Default district = saved or Dhaka (index 0)
+const savedIdx = localStorage.getItem('districtIdx');
+const defIdx = (savedIdx !== null && DISTRICTS[savedIdx]) ? +savedIdx : 0;
+
 let state = {
   lang: localStorage.getItem('lang') || 'bn',
   theme: localStorage.getItem('theme') || 'dark',
   times: null,
   nextPrayer: null,
   progressPct: 0,
-  // Location
-  lat: 23.7898,
-  lng: 90.4253,
-  city: 'Dhaka',
-  country: 'Bangladesh',
-  tzOffset: 6
+  districtIdx: defIdx
 };
 
-// ======================== IP GEOLOCATION ========================
+// ======================== DISTRICT SELECTOR ========================
 
-async function detectLocation() {
-  try {
-    const res = await fetch(GEO_API);
-    if (!res.ok) throw new Error('geo fail');
-    const d = await res.json();
-    if (d.latitude && d.longitude) {
-      state.lat = d.latitude;
-      state.lng = d.longitude;
-      state.city = d.city || d.region || 'Unknown';
-      state.country = d.country_name || 'Unknown';
-      state.tzOffset = d.utc_offset ? parseFloat(d.utc_offset) : state.tzOffset;
-      // Save to localStorage so it persists
-      localStorage.setItem('loc_city', state.city);
-      localStorage.setItem('loc_country', state.country);
-      return true;
-    }
-  } catch(e) { /* silent fail — keep default Dhaka */ }
-  // Try fallback from localStorage
-  const savedCity = localStorage.getItem('loc_city');
-  if (savedCity) {
-    state.city = savedCity;
-    state.country = localStorage.getItem('loc_country') || state.country;
-  }
-  return false;
+function getCurrentDistrict() { return DISTRICTS[state.districtIdx]; }
+
+async function setDistrict(idx) {
+  idx = Math.max(0, Math.min(DISTRICTS.length - 1, idx));
+  state.districtIdx = idx;
+  localStorage.setItem('districtIdx', idx);
+
+  // Sync both selects
+  document.querySelectorAll('#districtSelect, #settingsDistrictSelect').forEach(el => el.value = idx);
+
+  updateLocationDisplay();
+
+  // Refetch times with new coordinates
+  await fetchTimes();
+  tick();
 }
 
 function updateLocationDisplay() {
+  const d = getCurrentDistrict();
   const bn = state.lang === 'bn';
-  if (state.city && state.country) {
-    $('locationDisplay').textContent = bn
-      ? `${state.country} — ${state.city}`
-      : `${state.city}, ${state.country}`;
+  $('locationDisplay').textContent = bn ? `${d.bn}, বাংলাদেশ` : `${d.en}, Bangladesh`;
+}
+
+function populateDistrictSelect() {
+  const selects = ['districtSelect', 'settingsDistrictSelect'];
+  for (const selId of selects) {
+    const sel = $(selId);
+    if (!sel) continue;
+    sel.innerHTML = '';
+    DISTRICTS.forEach((d, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${d.bn} (${d.en})`;
+      sel.appendChild(opt);
+    });
+    sel.value = state.districtIdx;
   }
-  // Show the auto-detect badge if we detected (not default Dhaka)
-  const isAuto = state.city !== 'Dhaka' || state.country !== 'Bangladesh';
-  $('autoBadge').classList.toggle('hidden', !isAuto);
 }
 
 // ======================== PRAYER TIMES ========================
 
 async function fetchTimes() {
   try {
+    const d = getCurrentDistrict();
     const now = getNow();
     const ds = `${now.getDate()}-${now.getMonth()+1}-${now.getFullYear()}`;
-    const url = `${API_BASE}/timings/${ds}?latitude=${state.lat}&longitude=${state.lng}&method=1&school=1`;
+    const url = `${API_BASE}/timings/${ds}?latitude=${d.lat}&longitude=${d.lng}&method=1&school=1`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('API error');
-    const d = await res.json();
-    if (d.code !== 200) throw new Error('Invalid');
-    const t = d.data.timings;
+    const data = await res.json();
+    if (data.code !== 200) throw new Error('Invalid');
+    const t = data.data.timings;
     state.times = {
       fajr: t.Fajr, sunrise: t.Sunrise, dhuhr: t.Dhuhr,
       asr: t.Asr, maghrib: t.Maghrib, isha: t.Isha
     };
     return true;
   } catch(e) {
-    // Fallback (approx Dhaka)
+    // Fallback — use Dhaka approx
     state.times = {
       fajr: '03:54', sunrise: '05:20', dhuhr: '12:04',
       asr: '16:44', maghrib: '18:48', isha: '20:14'
@@ -120,9 +188,7 @@ function findNext() {
   const cs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
 
   const times = {};
-  for (const key of PRAYER_ORDER) {
-    times[key] = t2m(state.times[key]);
-  }
+  for (const key of PRAYER_ORDER) times[key] = t2m(state.times[key]);
 
   let next = null;
   let current = null;
@@ -188,7 +254,6 @@ function tick() {
   updateProgress();
   updateDates();
   updateNafil();
-  updateTimesTable();
 }
 
 // ======================== NAFIL TIMES ========================
@@ -203,12 +268,9 @@ function minToTimeStr(m) {
 function updateNafil() {
   if (!state.times) return;
   const f = t2m(state.times.fajr);
-  const s = t2m(state.times.sunrise);
-  const d = t2m(state.times.dhuhr);
   const m = t2m(state.times.maghrib);
-  const i = t2m(state.times.isha);
 
-  // --- Tahajjud: last 1/3 of night (Maghrib → Fajr) ---
+  // Tahajjud: last 1/3 of night from Maghrib → Fajr
   let nightDur;
   if (f < m) nightDur = (1440 - m) + f;
   else nightDur = f - m;
@@ -216,53 +278,10 @@ function updateNafil() {
   const lastThirdStart = (m + (2 / 3) * nightDur) % 1440;
 
   const tTime = minToTimeStr(lastThirdStart);
-  const fTime = minToTimeStr(f);
-
   const bn = state.lang === 'bn';
-  if (bn) {
-    $('nafilTahajjudTime').textContent = `রাত ${tTime} — সাহরি (রাতের শেষ তৃতীয়াংশ)`;
-  } else {
-    $('nafilTahajjudTime').textContent = `~${tTime} — Fajr (last 1/3 of night)`;
-  }
-}
-
-// ======================== TIMES TABLE ========================
-
-function updateTimesTable() {
-  if (!state.times) return;
-  const bn = state.lang === 'bn';
-  const labels = bn
-    ? { fajr: 'ফজর', dhuhr: 'যোহর', asr: 'আসর', maghrib: 'মাগরিব', isha: 'ইশা' }
-    : { fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
-
-  const order = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-  for (const key of order) {
-    const slot = $('timesGrid').querySelector(`[data-prayer="${key}"]`);
-    if (!slot) continue;
-    const t = state.times[key];
-    if (t) {
-      slot.querySelector('.time-value').textContent = t.slice(0, 5);
-    }
-    slot.querySelector('.time-label').textContent = labels[key];
-  }
-
-  // Highlight the current/next prayer
-  const now = getNow();
-  const cm = now.getHours() * 60 + now.getMinutes();
-  const order2 = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-  let nextIdx = -1;
-  for (let i = 0; i < order2.length; i++) {
-    const tm = t2m(state.times[order2[i]]);
-    if (cm < tm) { nextIdx = i; break; }
-  }
-  if (nextIdx === -1) nextIdx = 0; // next is fajr (tomorrow)
-
-  // Class: highlight the NEXT prayer
-  document.querySelectorAll('#timesGrid .time-slot').forEach(el => {
-    el.classList.remove('slot-now', 'slot-next');
-  });
-  const activeEl = document.querySelector(`#timesGrid [data-prayer="${order2[nextIdx]}"]`);
-  if (activeEl) activeEl.classList.add('slot-next');
+  $('nafilTahajjudTime').textContent = bn
+    ? `রাত ${tTime} — সাহরি (রাতের শেষ তৃতীয়াংশ)`
+    : `~${tTime} — Fajr (last 1/3 of night)`;
 }
 
 // ======================== LANGUAGE ========================
@@ -270,15 +289,12 @@ function updateTimesTable() {
 function setLang(lang) {
   state.lang = lang;
   localStorage.setItem('lang', lang);
-
   document.querySelectorAll('#langToggle span').forEach(el => {
     el.classList.toggle('active', el.dataset.lang === lang);
   });
-  // Theme toggle labels also
   document.querySelectorAll('#themeToggle span').forEach(el => {
     const bn = lang === 'bn';
-    if (el.dataset.theme === 'dark') el.textContent = bn ? '◐ ডার্ক' : '◐ Dark';
-    else el.textContent = bn ? '☀ লাইট' : '☀ Light';
+    el.textContent = el.dataset.theme === 'dark' ? (bn ? '◐ ডার্ক' : '◐ Dark') : (bn ? '☀ লাইট' : '☀ Light');
   });
 
   updateLocationDisplay();
@@ -304,6 +320,7 @@ function setLang(lang) {
   $('settingsTitle').textContent = bn ? 'সেটিংস' : 'Settings';
   $('langSettingLabel').textContent = bn ? 'ভাষা / Language' : 'Language';
   $('themeSettingLabel').textContent = bn ? 'থিম / Theme' : 'Theme';
+  $('districtSettingLabel').textContent = bn ? 'জেলা / District' : 'District';
   $('footerPowered').textContent = bn ? 'Powered by' : 'Powered by';
 }
 
@@ -313,22 +330,15 @@ function setTheme(theme) {
   state.theme = theme;
   localStorage.setItem('theme', theme);
   document.documentElement.setAttribute('data-theme', theme);
-
   document.querySelectorAll('#themeToggle span').forEach(el => {
     el.classList.toggle('active', el.dataset.theme === theme);
   });
-
   const isDark = theme === 'dark';
   $('themeIconSun').classList.toggle('hidden', isDark);
   $('themeIconMoon').classList.toggle('hidden', !isDark);
   const btn = $('themeBtn');
-  if (isDark) {
-    btn.style.background = '';
-    btn.querySelector('i').style.color = '';
-  } else {
-    btn.style.background = '#e2e8f0';
-    btn.querySelector('i').style.color = '#f59e0b';
-  }
+  if (isDark) { btn.style.background = ''; btn.querySelector('i').style.color = ''; }
+  else { btn.style.background = '#e2e8f0'; btn.querySelector('i').style.color = '#f59e0b'; }
 }
 
 // ======================== BENGALI DATE ========================
@@ -361,7 +371,7 @@ function getBanglaDate(g) {
     return { ...mm, date: new Date(ty, mm.ms - 1, mm.ds) };
   });
   let bm = ye[0];
-  for (const ms of ye) { if (ms.date <= g) bm = ms; }
+  for (const ms of ye) if (ms.date <= g) bm = ms;
   const diff = Math.floor((g - bm.date) / 86400000);
   return { day: diff + 1, monthEn: bm.en, monthBn: bm.bn, year: by };
 }
@@ -377,7 +387,6 @@ function updateDates() {
 
 // ======================== WIDGET ========================
 
-// Listen for IslamicFinder postMessage auto-height (if supported)
 window.addEventListener('message', function(e) {
   if (e.origin !== 'https://www.islamicfinder.org') return;
   try {
@@ -394,9 +403,7 @@ function sizeWidget() {
   w.style.height = '340px';
   w.addEventListener('load', function onLoad() {
     setTimeout(() => {
-      if (w.style.height === '340px' || w.style.height === '0px') {
-        w.style.height = '360px';
-      }
+      if (w.style.height === '340px' || w.style.height === '0px') w.style.height = '360px';
     }, 2000);
   });
 }
@@ -404,9 +411,15 @@ function sizeWidget() {
 // ======================== INIT ========================
 
 document.addEventListener('DOMContentLoaded', async function() {
-  // ---- Geolocation ----
-  await detectLocation();
+  // ---- District selector ----
+  populateDistrictSelect();
   updateLocationDisplay();
+  $('districtSelect').addEventListener('change', function() {
+    setDistrict(+this.value);
+  });
+  $('settingsDistrictSelect').addEventListener('change', function() {
+    setDistrict(+this.value);
+  });
 
   // ---- Language toggle ----
   $('langToggle').addEventListener('click', function(e) {
@@ -433,9 +446,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   setLang(state.lang);
 
   // ---- Theme toggle ----
-  $('themeBtn').addEventListener('click', () => {
-    setTheme(state.theme === 'dark' ? 'light' : 'dark');
-  });
+  $('themeBtn').addEventListener('click', () => setTheme(state.theme === 'dark' ? 'light' : 'dark'));
   $('themeToggle').addEventListener('click', function(e) {
     const span = e.target.closest('span');
     if (span && span.dataset.theme) setTheme(span.dataset.theme);

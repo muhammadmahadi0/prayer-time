@@ -535,9 +535,15 @@ function updateStatusBar() {
   $('iftarTime').textContent = state.times.maghrib;
   $('iftarLabel').textContent = lang === 'bn' ? 'ইফতার' : 'Iftar';
 
-  // Column 3: BIG countdown — "ইফতারে বাকি" (before Maghrib) or "সাহরিতে বাকি" (after Maghrib)
-  const isBeforeIftar = cm < timeToMin(state.times.maghrib);
-  const isBeforeSahri = cm >= timeToMin(state.times.isha) || cm < timeToMin(state.times.fajr);
+  // Column 3: BIG countdown
+  const maghribMin = timeToMin(state.times.maghrib);
+  const ishaMin = timeToMin(state.times.isha);
+  const fajrMin = timeToMin(state.times.fajr);
+
+  // Before Iftar = between Fajr and Maghrib (daytime)
+  const isBeforeIftar = cm >= fajrMin && cm < maghribMin;
+  // Before Sahri = after Isha or before Fajr (nighttime, Isha-to-Fajr wraparound)
+  const isBeforeSahri = cm >= ishaMin || cm < fajrMin;
 
   let targetKey, labelBn, labelEn;
   if (isBeforeIftar) {

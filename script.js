@@ -164,12 +164,12 @@ function updateNafil() {
   const m = t2m(state.times.maghrib);
   const i = t2m(state.times.isha);
 
-  // --- Tahajjud: last 1/3 of night (Isha → Fajr) ---
+  // --- Tahajjud: last 1/3 of night (Maghrib → Fajr) ---
   let nightDur;
-  if (f < i) nightDur = (1440 - i) + f; // crosses midnight
-  else nightDur = f - i;
-  if (nightDur <= 0) nightDur = 480; // fallback ~8h
-  const lastThirdStart = (i + (2 / 3) * nightDur) % 1440;
+  if (f < m) nightDur = (1440 - m) + f; // crosses midnight
+  else nightDur = f - m;
+  if (nightDur <= 0) nightDur = 540; // fallback ~9h
+  const lastThirdStart = (m + (2 / 3) * nightDur) % 1440;
 
   const tTime = minToTimeStr(lastThirdStart);
   const fTime = minToTimeStr(f);

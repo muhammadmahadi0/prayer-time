@@ -219,12 +219,14 @@ function findNext() {
   const pct = Math.min(100, Math.max(0, (elapsed / dur) * 100));
 
   state.nextPrayer = { ...next, remaining };
+  state.currentPrayer = current;
   state.progressPct = pct;
 }
 
 function updateCountdown() {
   if (!state.nextPrayer) return;
   const n = state.nextPrayer;
+  const cur = state.currentPrayer || n.key;
   const remaining = n.remaining - 1000;
   n.remaining = Math.max(0, remaining);
 
@@ -235,11 +237,11 @@ function updateCountdown() {
 
   const bn = state.lang === 'bn';
   if (bn) {
-    $('nextPrayerName').textContent = PRAYER_NAMES_BN[n.key];
+    $('nextPrayerName').textContent = PRAYER_NAMES_BN[cur];
     $('timeRemainingLabelBn').classList.remove('hidden');
     $('timeRemainingLabelEn').classList.add('hidden');
   } else {
-    $('nextPrayerName').textContent = PRAYER_NAMES_EN[n.key];
+    $('nextPrayerName').textContent = PRAYER_NAMES_EN[cur];
     $('timeRemainingLabelEn').classList.remove('hidden');
     $('timeRemainingLabelBn').classList.add('hidden');
   }

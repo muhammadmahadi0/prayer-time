@@ -1,0 +1,147 @@
+/* ========================================================================
+   Prayer Times — IslahBD Style (Dark + Emerald Green) v2 - Mobile First
+   ======================================================================== */
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+/* Selection */
+::selection { background: rgba(16, 185, 129, 0.3); }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Prayer cards */
+.prayer-card {
+  animation: fadeIn 0.35s ease forwards;
+  opacity: 0;
+}
+
+.prayer-card.active {
+  background: #059669 !important;
+  color: white !important;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(5, 150, 105, 0.35);
+}
+
+.prayer-card.active .text-gray-100 {
+  color: white !important;
+}
+
+.prayer-card.active .text-gray-500 {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.prayer-card:not(.active) .badge {
+  background: #1e293b;
+  color: #94a3b8;
+  border-radius: 999px;
+}
+
+.prayer-card.active .badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* Settings panel animation */
+#settingsPanel {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+#settingsPanel.open {
+  transform: translateY(0);
+}
+
+#overlay.show {
+  display: block;
+}
+
+/* Location select custom */
+#locationSelect option {
+  background: #131820;
+  color: white;
+}
+
+/* Countdown — subtle pulse (not too aggressive) */
+@keyframes pulse-countdown {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+#countdownDisplay {
+  animation: pulse-countdown 2s ease-in-out infinite;
+}
+
+/* FAQ modal */
+#faqModal:not(.hidden) {
+  display: flex;
+}
+
+.faq-item {
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+  padding-bottom: 14px;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Safe area for notch phones */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Disable text selection on interactive elements */
+.touch-manipulation {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Progress ring transition */
+#progressRing {
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Smooth scroll for FAQ */
+#faqModal > div {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better touch feel on select */
+#locationSelect {
+  -webkit-appearance: none;
+}
+
+/* Very small screens (<= 360px) */
+@media (max-width: 360px) {
+  #prayerSection {
+    grid-template-columns: 1fr !important;
+  }
+  #progressContainer {
+    justify-content: center !important;
+  }
+  #countdownDisplay {
+    font-size: 24px !important;
+  }
+}
+
+/* Dark mode scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}

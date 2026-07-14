@@ -100,7 +100,8 @@
           </div>
           <div class="rounded-xl p-3">
             <p class="text-[10px] font-medium" id="nafilDuha">সালাতুদ দুহা</p>
-            <p class="text-xs mt-0.5">ইশরাক — যোহর</p>
+            <p class="text-xs mt-0.5" id="nafilDuhaTime">ইশরাক — যোহর</p>
+            <p class="text-xs mt-1 font-mono" id="nafilDuhaTimer"></p>
           </div>
           <div class="rounded-xl p-3">
             <p class="text-[10px] font-medium" id="nafilAwwabin">আওয়াবীন</p>
@@ -118,7 +119,10 @@
         <div class="px-4 pb-4 space-y-2 pt-3">
           <div class="flex justify-between text-xs">
             <span id="prohSunriseLabel">সূর্যোদয়</span>
-            <span id="prohSunriseVal">+১৫ মিনিট</span>
+            <span class="text-right">
+              <span id="prohSunriseTimer" class="text-red-500 font-mono"></span>
+              <span id="prohSunriseVal">+১৫ মিনিট</span>
+            </span>
           </div>
           <div class="flex justify-between text-xs">
             <span id="prohNoonLabel">সূর্য মধ্যাকাশে</span>

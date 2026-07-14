@@ -272,6 +272,8 @@ function updateNafil() {
   if (!state.times) return;
   const f = t2m(state.times.fajr);
   const m = t2m(state.times.maghrib);
+  const sun = state.times.sunrise ? t2m(state.times.sunrise) : 0;
+  const dhuhr = state.times.dhuhr ? t2m(state.times.dhuhr) : 0;
 
   // Tahajjud: last 1/3 of night from Maghrib → Fajr
   let nightDur;
@@ -285,6 +287,42 @@ function updateNafil() {
   $('nafilTahajjudTime').textContent = bn
     ? `রাত ${tTime} — সাহরি (রাতের শেষ তৃতীয়াংশ)`
     : `~${tTime} — Fajr (last 1/3 of night)`;
+
+  // ---- Sunrise prohibited timer (RED) ----
+  const now = getNow();
+  const cm = now.getHours() * 60 + now.getMinutes();
+  const cs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+  const sunriseEnd = sun + 15; // prohibited period: 15 min after sunrise
+  const prohTimerEl = $('prohSunriseTimer');
+  if (sun > 0 && cm >= sun && cm < sunriseEnd) {
+    // Currently in prohibited period — show RED countdown
+    const remainSec = (sunriseEnd * 60 - cs + 86400) % 86400;
+    const h = Math.floor(remainSec / 3600);
+    const m2 = Math.floor((remainSec % 3600) / 60);
+    const s = Math.floor(remainSec % 60);
+    prohTimerEl.textContent = `⏳ ${pad(h)}:${pad(m2)}:${pad(s)} `;
+    prohTimerEl.className = 'text-red-500 font-mono';
+  } else {
+    prohTimerEl.textContent = '';
+  }
+
+  // ---- Duha timer ----
+  const duhaStart = sun + 18; // ~18min after sunrise (Ishraq end / Duha start)
+  const duhaEnd = dhuhr - 10;  // ends ~10min before Dhuhr
+  const duhaTimerEl = $('nafilDuhaTimer');
+  if (sun > 0 && cm < duhaStart) {
+    // Before Duha — countdown to Duha
+    const remainSec = (duhaStart * 60 - cs + 86400) % 86400;
+    const h = Math.floor(remainSec / 3600);
+    const m2 = Math.floor((remainSec % 3600) / 60);
+    const s = Math.floor(remainSec % 60);
+    duhaTimerEl.textContent = bn ? `${pad(h)}:${pad(m2)}:${pad(s)} বাকি` : `${pad(h)}:${pad(m2)}:${pad(s)} left`;
+  } else if (sun > 0 && cm >= duhaStart && cm < duhaEnd) {
+    // Duha time ongoing
+    duhaTimerEl.textContent = bn ? 'দুহার সময়' : 'Duha time';
+  } else {
+    duhaTimerEl.textContent = '';
+  }
 }
 
 // ======================== LANGUAGE ========================
